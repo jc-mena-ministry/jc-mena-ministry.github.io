@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>لوحة تحكم JC</title>
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Poppins:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+.adm{padding-block:34px 80px}
+.adm-top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:22px}
+.adm-top h1{font-size:28px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.tab{padding:10px 18px;border-radius:100px;border:1px solid var(--line);background:var(--surface-2);color:var(--muted);font:700 14px/1 var(--body);cursor:pointer}
+.tab[aria-selected="true"]{background:linear-gradient(90deg,var(--purple),var(--cyan));color:#fff;border-color:transparent}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.bar select{width:auto}
+.count{color:var(--muted);font-size:14px}
+.subs{display:grid;gap:12px}
+.sub{background:var(--surface-2);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+.sub.new{border-color:rgba(6,182,212,.55)}
+.sub-h{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.pill{font-size:12px;font-weight:800;padding:4px 12px;border-radius:100px;border:1px solid var(--line)}
+.pill.t-contact{color:#d9b8ff}.pill.t-starbooks_request{color:#d9b8ff;border-color:rgba(168,85,247,.5)}
+.pill.t-topteam_team{color:#ffe58a;border-color:rgba(250,204,21,.5)}.pill.t-idrak_application{color:#8be9f7;border-color:rgba(6,182,212,.5)}
+.pill.s-new{background:rgba(6,182,212,.15);color:#8be9f7}.pill.s-done{background:rgba(74,222,128,.12);color:#86efac}
+.when{font-size:12.5px;color:var(--muted);font-family:var(--lat)}
+.kv{display:grid;grid-template-columns:minmax(120px,190px) 1fr;gap:4px 14px;font-size:14.5px}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;white-space:pre-wrap;word-break:break-word}
+.sub-a{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.sm{padding:8px 14px;font-size:13px}
+.danger{border-color:rgba(236,72,153,.55)!important;color:#f9a8d4}
+.ed{display:grid;gap:26px}
+.ed section{background:var(--surface-2);border:1px solid var(--line);border-radius:18px;padding:20px}
+.ed h2{font-size:19px;margin-bottom:4px}
+.ed .hint{color:var(--muted);font-size:13.5px;margin-bottom:14px}
+.rows{display:grid;gap:8px}
+.erow{display:grid;gap:8px;align-items:center}
+.erow input,.erow select{padding:10px 12px}
+.erow .x{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:#f9a8d4;cursor:pointer;font-size:18px}
+.save-bar{position:sticky;bottom:calc(12px + env(safe-area-inset-bottom,0px));display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:rgba(12,16,36,.92);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:16px;padding:12px 16px}
+.login{max-width:420px;margin:60px auto}
+@media (max-width:700px){.erow{grid-template-columns:1fr!important}.kv{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="bg-glow" aria-hidden="true"><span class="g1"></span><span class="g2"></span><span class="g3"></span></div>
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="index.html"><img class="brand-mark" src="assets/img/jc.webp" alt="شعار JC"><span><span class="brand-name">لوحة التحكم</span><span class="brand-sub">JC — Jesus Can</span></span></a>
+    <button class="btn btn-line nav-cta hide" id="out" type="button" style="display:inline-flex">خروج</button>
+  </div>
+</header>
+<main class="wrap adm">
+
+  <form class="login" id="login" novalidate>
+    <h1 style="font-size:26px">دخول الإدارة</h1>
+    <p class="form-note">نفس حساب الإدارة المستخدم في تطبيق «رحلة الحفظ».</p>
+    <label for="l-email">البريد الإلكتروني<input id="l-email" type="email" dir="ltr" autocomplete="username" required></label>
+    <label for="l-pass">كلمة المرور<input id="l-pass" type="password" dir="ltr" autocomplete="current-password" required></label>
+    <button class="btn btn-brand" type="submit" style="justify-self:start">دخول</button>
+    <p class="status" id="l-status" hidden></p>
+  </form>
+
+  <div id="panel" class="hide">
+    <div class="adm-top"><h1>أهلًا بك</h1><span class="count" id="who"></span></div>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true" data-tab="subs" id="tab-subs">الطلبات</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="content" id="tab-content">محتوى الموقع</button>
+    </div>
+
+    <!-- submissions -->
+    <div id="pane-subs">
+      <div class="bar">
+        <select id="f-type" aria-label="نوع الطلب">
+          <option value="">كل الطلبات</option>
+          <option value="topteam_team">تسجيل فرق توب تيم</option>
+          <option value="idrak_application">طلبات إدراك</option>
+          <option value="starbooks_request">طلبات ستار بوكس</option>
+          <option value="contact">رسائل التواصل</option>
+        </select>
+        <select id="f-status" aria-label="الحالة">
+          <option value="">كل الحالات</option>
+          <option value="new">جديد</option>
+          <option value="done">تم التواصل</option>
+        </select>
+        <button class="btn btn-line sm" id="reload" type="button">تحديث</button>
+        <button class="btn btn-line sm" id="csv" type="button">تحميل Excel (CSV)</button>
+        <span class="count" id="count"></span>
+      </div>
+      <div class="subs" id="subs"></div>
+    </div>
+
+    <!-- content editor -->
+    <div id="pane-content" class="hide">
+      <div class="ed">
+        <section>
+          <h2>الأرقام</h2>
+          <p class="hint">تظهر كبطاقات أرقام في الصفحة المختارة. مثال: «٤٥» — «كنيسة شريكة».</p>
+          <div class="rows" id="ed-stats"></div>
+          <button class="btn btn-line sm" type="button" data-add="stats" style="margin-top:10px">+ رقم جديد</button>
+        </section>
+        <section>
+          <h2>فيديوهات ستار بوكس المختارة</h2>
+          <p class="hint">الصق لينك الفيديو من يوتيوب، واكتب عنوانه واسم الكتاب. تظهر كبطاقات تحت المشغّل.</p>
+          <div class="rows" id="ed-videos"></div>
+          <button class="btn btn-line sm" type="button" data-add="videos" style="margin-top:10px">+ فيديو</button>
+        </section>
+        <section>
+          <h2>الصور</h2>
+          <p class="hint">ارفع الصورة على GitHub داخل فولدر <span class="lat" dir="ltr">assets/photos</span>، ثم اكتب هنا مسارها، مثال: <span class="lat" dir="ltr">assets/photos/final-2026.jpg</span>. صور كل برنامج تظهر في صفحته، وكلها تظهر في الرئيسية.</p>
+          <div class="rows" id="ed-gallery"></div>
+          <button class="btn btn-line sm" type="button" data-add="gallery" style="margin-top:10px">+ صورة</button>
+        </section>
+        <section>
+          <h2>قاعة مشاهير توب تيم</h2>
+          <p class="hint">نتائج المواسم السابقة. يُفضّل اسم الفريق والكنيسة فقط بدون أسماء أفراد.</p>
+          <div class="rows" id="ed-hallOfFame"></div>
+          <button class="btn btn-line sm" type="button" data-add="hallOfFame" style="margin-top:10px">+ نتيجة</button>
+        </section>
+        <div class="save-bar"><span class="count" id="save-msg">التعديلات لا تظهر في الموقع قبل الحفظ.</span><button class="btn btn-brand" id="save" type="button">حفظ ونشر على الموقع</button></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs, query, orderBy, doc, updateDoc, deleteDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { firebaseConfig } from "./assets/config.js";
+
+const app = initializeApp(firebaseConfig, "admin");
+const db = getFirestore(app);
+const auth = getAuth(app);
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const TYPES = { contact: "رسالة تواصل", starbooks_request: "ستار بوكس", topteam_team: "فريق توب تيم", idrak_application: "إدراك" };
+const PAGES = [["home", "الرئيسية"], ["starbooks", "ستار بوكس"], ["topteam", "توب تيم"], ["idrak", "إدراك"]];
+
+/* ---------- auth ---------- */
+$("login").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const st = $("l-status");
+  try {
+    await signInWithEmailAndPassword(auth, $("l-email").value.trim(), $("l-pass").value);
+  } catch (err) {
+    st.hidden = false; st.className = "status err"; st.textContent = "البريد أو كلمة المرور غير صحيحة.";
+  }
+});
+$("out").addEventListener("click", () => signOut(auth));
+onAuthStateChanged(auth, (u) => {
+  $("login").classList.toggle("hide", !!u);
+  $("panel").classList.toggle("hide", !u);
+  $("out").classList.toggle("hide", !u);
+  if (u) { $("who").textContent = u.email; loadSubs(); loadContent(); }
+});
+
+/* ---------- tabs ---------- */
+document.querySelectorAll(".tab").forEach((t) => t.addEventListener("click", () => {
+  document.querySelectorAll(".tab").forEach((x) => x.setAttribute("aria-selected", x === t));
+  $("pane-subs").classList.toggle("hide", t.dataset.tab !== "subs");
+  $("pane-content").classList.toggle("hide", t.dataset.tab !== "content");
+}));
+
+/* ---------- submissions ---------- */
+let SUBS = [];
+const fmt = (ts) => { try { return ts.toDate().toLocaleString("ar-EG", { dateStyle: "medium", timeStyle: "short" }); } catch (e) { return ""; } };
+async function loadSubs() {
+  $("subs").innerHTML = '<p class="count">جارٍ التحميل…</p>';
+  try {
+    const snap = await getDocs(query(collection(db, "jc_submissions"), orderBy("createdAt", "desc")));
+    SUBS = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    renderSubs();
+  } catch (err) {
+    console.error(err);
+    $("subs").innerHTML = '<p class="status err">تعذّر تحميل الطلبات. تأكد أن قواعد Firestore الجديدة تم نشرها، وأنك داخل بحساب الإدارة.</p>';
+  }
+}
+function filtered() {
+  const t = $("f-type").value, s = $("f-status").value;
+  return SUBS.filter((x) => (!t || x.type === t) && (!s || x.status === s));
+}
+function renderSubs() {
+  const list = filtered();
+  const fresh = SUBS.filter((x) => x.status === "new").length;
+  $("count").textContent = `${list.length} طلب · ${fresh} جديد`;
+  if (!list.length) { $("subs").innerHTML = '<p class="count">لا توجد طلبات بهذا الاختيار.</p>'; return; }
+  $("subs").innerHTML = list.map((x) => `
+    <article class="sub ${x.status === "new" ? "new" : ""}" data-id="${x.id}">
+      <div class="sub-h">
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="pill t-${esc(x.type)}">${esc(TYPES[x.type] || x.type)}</span><span class="pill s-${esc(x.status)}">${x.status === "new" ? "جديد" : "تم التواصل"}</span></div>
+        <span class="when">${fmt(x.createdAt)}</span>
+      </div>
+      <dl class="kv">${Object.values(x.fields || {}).filter((f) => f.value).map((f) => `<dt>${esc(f.label)}</dt><dd>${esc(f.value)}</dd>`).join("")}</dl>
+      <div class="sub-a">
+        <button class="btn btn-line sm" data-act="toggle" type="button">${x.status === "new" ? "تم التواصل ✓" : "إرجاع كجديد"}</button>
+        <button class="btn btn-line sm danger" data-act="del" type="button">حذف</button>
+      </div>
+    </article>`).join("");
+}
+$("f-type").addEventListener("change", renderSubs);
+$("f-status").addEventListener("change", renderSubs);
+$("reload").addEventListener("click", loadSubs);
+$("subs").addEventListener("click", async (e) => {
+  const b = e.target.closest("button[data-act]"); if (!b) return;
+  const card = b.closest(".sub"); const id = card.dataset.id; const item = SUBS.find((x) => x.id === id);
+  if (b.dataset.act === "toggle") {
+    const status = item.status === "new" ? "done" : "new";
+    b.disabled = true;
+    try { await updateDoc(doc(db, "jc_submissions", id), { status }); item.status = status; renderSubs(); }
+    catch (err) { b.disabled = false; b.textContent = "تعذّر التحديث"; }
+  }
+  if (b.dataset.act === "del") {
+    if (!b.dataset.sure) { b.dataset.sure = "1"; b.textContent = "اضغط مرة ثانية للتأكيد"; setTimeout(() => { delete b.dataset.sure; b.textContent = "حذف"; }, 3000); return; }
+    try { await deleteDoc(doc(db, "jc_submissions", id)); SUBS = SUBS.filter((x) => x.id !== id); renderSubs(); }
+    catch (err) { b.textContent = "تعذّر الحذف"; }
+  }
+});
+$("csv").addEventListener("click", () => {
+  const list = filtered(); if (!list.length) return;
+  const labels = [];
+  list.forEach((x) => Object.values(x.fields || {}).forEach((f) => { if (!labels.includes(f.label)) labels.push(f.label); }));
+  const head = ["النوع", "الحالة", "التاريخ", ...labels];
+  const q = (v) => '"' + String(v ?? "").replace(/"/g, '""') + '"';
+  const rows = list.map((x) => {
+    const byLabel = {}; Object.values(x.fields || {}).forEach((f) => (byLabel[f.label] = f.value));
+    return [TYPES[x.type] || x.type, x.status === "new" ? "جديد" : "تم التواصل", fmt(x.createdAt), ...labels.map((l) => byLabel[l] || "")].map(q).join(",");
+  });
+  const blob = new Blob(["﻿" + [head.map(q).join(","), ...rows].join("\n")], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+  a.download = `jc-${$("f-type").value || "all"}-${new Date().toISOString().slice(0, 10)}.csv`; a.click();
+});
+
+/* ---------- content editor (doc jc_site/content) ---------- */
+const SCHEMA = {
+  stats: [["page", "select", PAGES, "الصفحة"], ["value", "text", null, "الرقم (مثال: ٤٥)"], ["label", "text", null, "الوصف (مثال: كنيسة شريكة)"]],
+  videos: [["url", "text", null, "لينك الفيديو على يوتيوب"], ["title", "text", null, "العنوان"], ["book", "text", null, "اسم الكتاب (اختياري)"]],
+  gallery: [["page", "select", PAGES, "الصفحة"], ["src", "text", null, "assets/photos/اسم-الصورة.jpg"], ["caption", "text", null, "وصف قصير"]],
+  hallOfFame: [["season", "text", null, "الموسم (مثال: 2025)"], ["place", "text", null, "المركز"], ["team", "text", null, "اسم الفريق"], ["church", "text", null, "الكنيسة / المدرسة"]]
+};
+let CONTENT = { stats: [], videos: [], gallery: [], hallOfFame: [] };
+function rowHTML(key, item) {
+  const cols = SCHEMA[key];
+  return `<div class="erow" style="grid-template-columns:${cols.map((c) => (c[1] === "select" ? "150px" : "1fr")).join(" ")} 40px">` +
+    cols.map(([f, kind, opts, ph]) => kind === "select"
+      ? `<select data-f="${f}" aria-label="${ph}">${opts.map(([v, t]) => `<option value="${v}"${item[f] === v ? " selected" : ""}>${t}</option>`).join("")}</select>`
+      : `<input data-f="${f}" placeholder="${esc(ph)}" aria-label="${esc(ph)}" value="${esc(item[f] || "")}"${f === "url" || f === "src" ? ' dir="ltr"' : ""}>`).join("") +
+    `<button class="x" type="button" title="حذف" aria-label="حذف">×</button></div>`;
+}
+function renderEditor() {
+  Object.keys(SCHEMA).forEach((k) => { $("ed-" + k).innerHTML = (CONTENT[k] || []).map((it) => rowHTML(k, it)).join(""); });
+}
+function collect() {
+  const out = {};
+  Object.keys(SCHEMA).forEach((k) => {
+    out[k] = [...$("ed-" + k).querySelectorAll(".erow")].map((r) => {
+      const o = {}; r.querySelectorAll("[data-f]").forEach((el) => (o[el.dataset.f] = el.value.trim())); return o;
+    }).filter((o) => Object.entries(o).some(([f, v]) => f !== "page" && v));
+  });
+  return out;
+}
+async function loadContent() {
+  try { const s = await getDoc(doc(db, "jc_site", "content")); if (s.exists()) CONTENT = { ...CONTENT, ...s.data() }; } catch (e) { console.warn(e); }
+  renderEditor();
+}
+document.querySelectorAll("[data-add]").forEach((b) => b.addEventListener("click", () => {
+  $("ed-" + b.dataset.add).insertAdjacentHTML("beforeend", rowHTML(b.dataset.add, {}));
+  $("save-msg").textContent = "لديك تعديلات لم تُحفظ.";
+}));
+$("pane-content").addEventListener("click", (e) => { if (e.target.classList.contains("x")) { e.target.closest(".erow").remove(); $("save-msg").textContent = "لديك تعديلات لم تُحفظ."; } });
+$("pane-content").addEventListener("input", () => ($("save-msg").textContent = "لديك تعديلات لم تُحفظ."));
+$("save").addEventListener("click", async () => {
+  const b = $("save"); b.disabled = true;
+  try { CONTENT = collect(); await setDoc(doc(db, "jc_site", "content"), CONTENT); renderEditor(); $("save-msg").textContent = "تم الحفظ — التعديلات ظاهرة الآن على الموقع."; }
+  catch (err) { console.error(err); $("save-msg").textContent = "تعذّر الحفظ. تأكد من نشر قواعد Firestore الجديدة."; }
+  finally { b.disabled = false; }
+});
+</script>
+</body>
+</html>
