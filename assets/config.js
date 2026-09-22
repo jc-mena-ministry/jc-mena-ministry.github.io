@@ -1,10 +1,10 @@
-// JC — Firebase project settings (shared with «رحلة الحفظ»)
+// JC — Firebase project settings (dedicated project: jc-website-49b3f)
 export const firebaseConfig = {
-  apiKey: "AIzaSyBCo5_QcG7k44xBMXUCbSEGc6PixFrtMlI",
-  authDomain: "topteam-notifications.firebaseapp.com",
-  projectId: "topteam-notifications",
-  storageBucket: "topteam-notifications.firebasestorage.app",
-  messagingSenderId: "738475717278",
-  appId: "1:738475717278:web:e13fc118489280e8acc18f"
+  apiKey: "AIzaSyAS2V5flDiiUMRmIunmQoUueFsgZRDgLd4",
+  authDomain: "jc-website-49b3f.firebaseapp.com",
+  projectId: "jc-website-49b3f",
+  storageBucket: "jc-website-49b3f.firebasestorage.app",
+  messagingSenderId: "126874216447",
+  appId: "1:126874216447:web:1d5a72c4d7fecfc18529ca"
 };
 export const CONTACT_EMAIL = "jc.mena.ministry@gmail.com";
