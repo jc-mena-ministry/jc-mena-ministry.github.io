@@ -7,7 +7,7 @@
 <title>لوحة تحكم JC</title>
 <link rel="icon" type="image/png" href="assets/img/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Poppins:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Poppins:wght@400;600;700;800&display=swap">
 <link rel="stylesheet" href="assets/style.css">
 <style>
 .adm{padding-block:34px 80px}
@@ -44,7 +44,8 @@
 .erow .x{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:#f9a8d4;cursor:pointer;font-size:18px}
 .save-bar{position:sticky;bottom:calc(12px + env(safe-area-inset-bottom,0px));display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:rgba(12,16,36,.92);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:16px;padding:12px 16px}
 .login{max-width:420px;margin:60px auto}
-@media (max-width:700px){.erow{grid-template-columns:1fr!important}.kv{grid-template-columns:1fr}}
+@media (max-width:980px){.erow{grid-template-columns:1fr 1fr!important}.erow .x{justify-self:start}}
+@media (max-width:600px){.erow{grid-template-columns:1fr!important;padding:12px;border:1px solid var(--line);border-radius:12px}.kv{grid-template-columns:1fr}.adm-top h1{font-size:22px}.bar select,.bar .btn{flex:1 1 45%}}
 </style>
 </head>
 <body>
@@ -100,7 +101,7 @@
       <div class="ed">
         <section>
           <h2>الأرقام</h2>
-          <p class="hint">تظهر كبطاقات أرقام في الصفحة المختارة. مثال: «٤٥» — «كنيسة شريكة».</p>
+          <p class="hint">تظهر كبطاقات أرقام في الصفحة المختارة. اكتب الوصف بالعربي وبالإنجليزي عشان يظهر صح في النسختين. لو سبت الإنجليزي فاضي هيظهر العربي.</p>
           <div class="rows" id="ed-stats"></div>
           <button class="btn btn-line sm" type="button" data-add="stats" style="margin-top:10px">+ رقم جديد</button>
         </section>
@@ -193,7 +194,7 @@ function renderSubs() {
   $("subs").innerHTML = list.map((x) => `
     <article class="sub ${x.status === "new" ? "new" : ""}" data-id="${x.id}">
       <div class="sub-h">
-        <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="pill t-${esc(x.type)}">${esc(TYPES[x.type] || x.type)}</span><span class="pill s-${esc(x.status)}">${x.status === "new" ? "جديد" : "تم التواصل"}</span></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="pill t-${esc(x.type)}">${esc(TYPES[x.type] || x.type)}</span><span class="pill s-${esc(x.status)}">${x.status === "new" ? "جديد" : "تم التواصل"}</span>${String(x.page || "").startsWith("en/") ? '<span class="pill">EN</span>' : ""}</div>
         <span class="when">${fmt(x.createdAt)}</span>
       </div>
       <dl class="kv">${Object.values(x.fields || {}).filter((f) => f.value).map((f) => `<dt>${esc(f.label)}</dt><dd>${esc(f.value)}</dd>`).join("")}</dl>
@@ -225,11 +226,11 @@ $("csv").addEventListener("click", () => {
   const list = filtered(); if (!list.length) return;
   const labels = [];
   list.forEach((x) => Object.values(x.fields || {}).forEach((f) => { if (!labels.includes(f.label)) labels.push(f.label); }));
-  const head = ["النوع", "الحالة", "التاريخ", ...labels];
+  const head = ["النوع", "الحالة", "التاريخ", "اللغة", ...labels];
   const q = (v) => '"' + String(v ?? "").replace(/"/g, '""') + '"';
   const rows = list.map((x) => {
     const byLabel = {}; Object.values(x.fields || {}).forEach((f) => (byLabel[f.label] = f.value));
-    return [TYPES[x.type] || x.type, x.status === "new" ? "جديد" : "تم التواصل", fmt(x.createdAt), ...labels.map((l) => byLabel[l] || "")].map(q).join(",");
+    return [TYPES[x.type] || x.type, x.status === "new" ? "جديد" : "تم التواصل", fmt(x.createdAt), String(x.page || "").startsWith("en/") ? "EN" : "AR", ...labels.map((l) => byLabel[l] || "")].map(q).join(",");
   });
   const blob = new Blob(["﻿" + [head.map(q).join(","), ...rows].join("\n")], { type: "text/csv;charset=utf-8" });
   const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
@@ -238,10 +239,10 @@ $("csv").addEventListener("click", () => {
 
 /* ---------- content editor (doc jc_site/content) ---------- */
 const SCHEMA = {
-  stats: [["page", "select", PAGES, "الصفحة"], ["value", "text", null, "الرقم (مثال: ٤٥)"], ["label", "text", null, "الوصف (مثال: كنيسة شريكة)"]],
-  videos: [["url", "text", null, "لينك الفيديو على يوتيوب"], ["title", "text", null, "العنوان"], ["book", "text", null, "اسم الكتاب (اختياري)"]],
-  gallery: [["page", "select", PAGES, "الصفحة"], ["src", "text", null, "assets/photos/اسم-الصورة.jpg"], ["caption", "text", null, "وصف قصير"]],
-  hallOfFame: [["season", "text", null, "الموسم (مثال: 2025)"], ["place", "text", null, "المركز"], ["team", "text", null, "اسم الفريق"], ["church", "text", null, "الكنيسة / المدرسة"]]
+  stats: [["page", "select", PAGES, "الصفحة"], ["value", "text", null, "الرقم (مثال: 45)"], ["label", "text", null, "الوصف بالعربي (كنيسة شريكة)"], ["label_en", "text", null, "English (partner churches)"]],
+  videos: [["url", "text", null, "لينك الفيديو على يوتيوب"], ["title", "text", null, "العنوان بالعربي"], ["title_en", "text", null, "English title"], ["book", "text", null, "اسم الكتاب (اختياري)"]],
+  gallery: [["page", "select", PAGES, "الصفحة"], ["src", "text", null, "assets/photos/اسم-الصورة.jpg"], ["caption", "text", null, "وصف بالعربي"], ["caption_en", "text", null, "English caption"]],
+  hallOfFame: [["season", "text", null, "الموسم (مثال: 2025)"], ["place", "text", null, "المركز (الأول)"], ["place_en", "text", null, "Place (1st)"], ["team", "text", null, "اسم الفريق"], ["church", "text", null, "الكنيسة / المدرسة"]]
 };
 let CONTENT = { stats: [], videos: [], gallery: [], hallOfFame: [] };
 function rowHTML(key, item) {

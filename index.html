@@ -3,17 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>try{if(localStorage.getItem("jc-lang")==="en"&&!location.search.includes("ar"))location.replace("en/index.html"+location.hash)}catch(e){}</script>
 <title>JC — Jesus Can</title>
 <meta name="description" content="JC — Jesus Can: هيئة مسيحية تخدم الكنائس والمدارس في مصر ولبنان وسوريا من خلال برامج ستار بوكس وتوب تيم وإدراك.">
+<link rel="canonical" href="https://jc-mena-ministry.github.io/">
+<link rel="alternate" hreflang="ar" href="https://jc-mena-ministry.github.io/">
+<link rel="alternate" hreflang="en" href="https://jc-mena-ministry.github.io/en/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="JC — Jesus Can">
 <meta property="og:description" content="JC — Jesus Can: هيئة مسيحية تخدم الكنائس والمدارس في مصر ولبنان وسوريا من خلال برامج ستار بوكس وتوب تيم وإدراك.">
 <meta property="og:image" content="https://jc-mena-ministry.github.io/assets/img/og.jpg">
 <meta property="og:url" content="https://jc-mena-ministry.github.io/">
+<meta property="og:locale" content="ar_AR">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#050816">
 <link rel="icon" type="image/png" href="assets/img/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Poppins:wght@400;600;700;800&family=Amiri&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Poppins:wght@400;500;600;700;800&family=Amiri&display=swap">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body data-page="home">
@@ -22,11 +28,8 @@
   <div class="wrap nav">
     <a class="brand" href="index.html" aria-label="JC — الصفحة الرئيسية">
       <img class="brand-mark" src="assets/img/jc.webp" alt="شعار JC">
-      <span><span class="brand-name lat" style="direction:ltr;display:block;text-align:right">JC <span style="font-weight:600;color:var(--muted);font-size:14px">Jesus Can</span></span><span class="brand-sub">تعلّم. انمُ. عِش إيمانك</span></span>
+      <span><span class="brand-name lat" dir="ltr">JC <span class="brand-tag">Jesus Can</span></span><span class="brand-sub">تعلّم. انمُ. عِش إيمانك</span></span>
     </a>
-    <button class="burger" id="burger" aria-expanded="false" aria-controls="menu" aria-label="القائمة">
-      <svg width="20" height="20" viewBox="0 0 20 20"><path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-    </button>
     <ul class="menu" id="menu">
       <li><a href="index.html" aria-current="page">الرئيسية</a></li>
       <li><a href="star-books.html">ستار بوكس</a></li>
@@ -35,14 +38,20 @@
       <li><a href="index.html#involve">شارك معنا</a></li>
       <li><a href="index.html#contact">تواصل</a></li>
     </ul>
-    <a class="btn btn-gold nav-cta" href="index.html#contact">اطلب برنامجًا لكنيستك</a>
+    <div class="nav-end">
+      <a class="lang-sw" href="en/index.html" hreflang="en" lang="en" data-lang="en" title="English">EN</a>
+      <a class="btn btn-gold nav-cta" href="index.html#contact">اطلب برنامجًا لكنيستك</a>
+      <button class="burger" id="burger" aria-expanded="false" aria-controls="menu" aria-label="القائمة">
+        <svg width="20" height="20" viewBox="0 0 20 20"><path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
   </div>
 </header>
 <main>
 
 <section class="hero">
   <div class="wrap hero-grid">
-    <div>
+    <div class="hero-text">
       <span class="eyebrow">JC — Jesus Can · مصر · لبنان · سوريا</span>
       <h1>برامج تبني جيلًا <em>يعرف الكلمة</em> ويقود بها</h1>
       <p class="hero-lead">نصمّم برامج روحية وتعليمية للكنائس والمدارس في الشرق الأوسط — من فيديوهات «ستار بوكس» الكرتونية التي تلخّص الكتب المسيحية للشباب، إلى مسابقة «توب تيم» لحفظ الكتاب المقدس، إلى «إدراك» لإعداد قادة جدد للخدمة.</p>
@@ -57,8 +66,8 @@
     </div>
     <div class="umbrella" aria-label="برامج JC">
       <a class="tile t-sb" href="star-books.html"><img src="assets/img/starbooks.webp" alt="شعار ستار بوكس"><small>ملخصات كتب كرتونية</small></a>
-      <a class="tile t-tt" href="top-team.html"><img src="assets/img/topteam.webp" alt="شعار توب تيم"><small>مسابقة حفظ الكتاب المقدس</small></a>
-      <a class="tile t-ld" href="idrak.html"><img src="assets/img/idrak-logo.webp" alt="شعار إدراك" style="max-height:none;width:92%;border-radius:14px"><small>إعداد القادة ٢٠–٤٠</small></a>
+      <a class="tile t-tt" href="top-team.html"><img src="assets/img/topteam.webp" alt="شعار توب تيم"><small>مسابقة حفظ الكتاب المقدس لكل الأعمار</small></a>
+      <a class="tile t-ld" href="idrak.html"><img class="wide" src="assets/img/idrak-logo.webp" alt="شعار إدراك"><small>إعداد القادة ٢٠–٤٠</small></a>
       <div class="tile soon"><span class="plus">+</span><b>برامج قادمة</b><span>قيد الإعداد</span></div>
     </div>
   </div>
@@ -92,7 +101,7 @@
   </div>
 </section>
 
-<section class="block" id="programs" style="padding-top:20px">
+<section class="block" id="programs">
   <div class="wrap">
     <div class="head">
       <span class="eyebrow">برامجنا</span>
@@ -101,8 +110,8 @@
     </div>
     <div class="pcards">
       <a class="pcard sb" href="star-books.html"><div class="pc-logo"><img src="assets/img/starbooks.webp" alt=""></div><span class="prog-tag" style="--acc:var(--purple);--acc-line:rgba(168,85,247,.5);--acc-soft:#d9b8ff;align-self:start">فيديو · قراءة · شباب</span><h3>ستار بوكس</h3><p>فيديوهات كرتونية قصيرة تلخّص أهم الكتب المسيحية بلغة يفهمها الشباب — مكتبة كاملة على قناتنا.</p><span class="more">شاهد المكتبة ←</span></a>
-      <a class="pcard tt" href="top-team.html"><div class="pc-logo"><img src="assets/img/topteam.webp" alt=""></div><span class="prog-tag" style="--acc:var(--gold);--acc-line:rgba(250,204,21,.5);--acc-soft:#ffe58a;align-self:start">حفظ · فِرَق · مسابقة</span><h3>توب تيم</h3><p>مسابقة فرق لحفظ آيات الكتاب المقدس بين الكنائس والمدارس، مع تطبيق «رحلة الحفظ» للتدريب.</p><span class="more">سجّل فريقك ←</span></a>
-      <a class="pcard ld" href="idrak.html"><div class="pc-logo"><img src="assets/img/idrak-logo.webp" alt="" style="width:88%;height:auto;border-radius:12px"></div><span class="prog-tag" style="--acc:var(--cyan);--acc-line:rgba(6,182,212,.5);--acc-soft:#8be9f7;align-self:start">قيادة · تلمذة · خدمة</span><h3>إدراك</h3><p>برنامج لإعداد قادة من ٢٠ إلى ٤٠ عامًا يجمع التكوين الروحي والمهارات القيادية — وكتابه «مدير قائد».</p><span class="more">قدّم الآن ←</span></a>
+      <a class="pcard tt" href="top-team.html"><div class="pc-logo"><img src="assets/img/topteam.webp" alt=""></div><span class="prog-tag" style="--acc:var(--gold);--acc-line:rgba(250,204,21,.5);--acc-soft:#ffe58a;align-self:start">حفظ · فِرَق · مسابقة</span><h3>توب تيم</h3><p>مسابقة فرق لحفظ الكتاب المقدس لكل الأعمار، بدأت سنة ٢٠١٢ وأقيمت في لبنان ومصر، مع تطبيق «رحلة الحفظ» للتدريب.</p><span class="more">سجّل فريقك ←</span></a>
+      <a class="pcard ld" href="idrak.html"><div class="pc-logo"><img class="wide" src="assets/img/idrak-logo.webp" alt=""></div><span class="prog-tag" style="--acc:var(--cyan);--acc-line:rgba(6,182,212,.5);--acc-soft:#8be9f7;align-self:start">قيادة · تلمذة · خدمة</span><h3>إدراك</h3><p>برنامج لإعداد قادة من ٢٠ إلى ٤٠ عامًا يجمع التكوين الروحي والمهارات القيادية — وكتابه «مدير قائد».</p><span class="more">قدّم الآن ←</span></a>
     </div>
     <div class="next" style="margin-top:22px">
       <div><h3>برامج جديدة في الطريق</h3><p>نعمل على برامج إضافية لخدمة مراحل عمرية واحتياجات أخرى. تابعنا لتعرف أولًا.</p></div>
@@ -123,10 +132,18 @@
   </div>
 </section>
 
-<section class="block hide" data-when style="padding-block:40px 60px">
-  <div class="wrap hide-wrap">
+<section class="block" id="photos" data-when>
+  <div class="wrap">
     <div class="head"><span class="eyebrow">صور</span><h2>لحظات من خدمتنا</h2></div>
-    <div class="gallery" id="gallery"></div>
+    <div class="gallery" id="gallery">
+      <figure><a class="gl" href="assets/photos/tt-2025-05-egypt.webp" data-cap="أبطال توب تيم – مصر، مايو ٢٠٢٥"><img src="assets/photos/tt-2025-05-egypt-sm.webp" alt="أبطال توب تيم – مصر، مايو ٢٠٢٥" loading="lazy" width="640" height="466"></a><figcaption>أبطال توب تيم – مصر، مايو ٢٠٢٥</figcaption></figure>
+      <figure><a class="gl" href="assets/photos/tt-2024-11-egypt.webp" data-cap="تكريم الفائزين – مصر، نوفمبر ٢٠٢٤"><img src="assets/photos/tt-2024-11-egypt-sm.webp" alt="تكريم الفائزين – مصر، نوفمبر ٢٠٢٤" loading="lazy" width="640" height="466"></a><figcaption>تكريم الفائزين – مصر، نوفمبر ٢٠٢٤</figcaption></figure>
+      <figure><a class="gl" href="assets/photos/tt-2024-10-egypt-hall.webp" data-cap="قاعة المسابقة – مصر، أكتوبر ٢٠٢٤"><img src="assets/photos/tt-2024-10-egypt-hall-sm.webp" alt="قاعة المسابقة – مصر، أكتوبر ٢٠٢٤" loading="lazy" width="640" height="466"></a><figcaption>قاعة المسابقة – مصر، أكتوبر ٢٠٢٤</figcaption></figure>
+      <figure><a class="gl" href="assets/photos/tt-2024-04-lebanon.webp" data-cap="توب تيم في لبنان – أبريل ٢٠٢٤"><img src="assets/photos/tt-2024-04-lebanon-sm.webp" alt="توب تيم في لبنان – أبريل ٢٠٢٤" loading="lazy" width="640" height="466"></a><figcaption>توب تيم في لبنان – أبريل ٢٠٢٤</figcaption></figure>
+      <figure><a class="gl" href="assets/photos/tt-2023-05-lebanon-cup.webp" data-cap="رفع الكأس – لبنان، مايو ٢٠٢٣"><img src="assets/photos/tt-2023-05-lebanon-cup-sm.webp" alt="رفع الكأس – لبنان، مايو ٢٠٢٣" loading="lazy" width="640" height="466"></a><figcaption>رفع الكأس – لبنان، مايو ٢٠٢٣</figcaption></figure>
+      <figure><a class="gl" href="assets/photos/tt-2022-11-lebanon.webp" data-cap="توب تيم في لبنان – نوفمبر ٢٠٢٢"><img src="assets/photos/tt-2022-11-lebanon-sm.webp" alt="توب تيم في لبنان – نوفمبر ٢٠٢٢" loading="lazy" width="640" height="466"></a><figcaption>توب تيم في لبنان – نوفمبر ٢٠٢٢</figcaption></figure>
+    </div>
+    <p style="margin-top:18px"><a class="btn btn-line" href="top-team.html#photos">كل صور توب تيم ←</a></p>
   </div>
 </section>
 
@@ -146,23 +163,26 @@
   <div class="wrap contact-grid">
     <div>
       <span class="eyebrow">تواصل</span>
-      <h2 style="font-size:clamp(26px,3.4vw,36px);margin-block:14px 12px">يسعدنا أن نسمع منك</h2>
-      <p style="color:var(--muted);font-size:16px">سواء أردت بدء برنامج، أو التطوع، أو الصلاة معنا — اكتب لنا وسنرد عليك.</p>
+      <h2 class="h2">يسعدنا أن نسمع منك</h2>
+      <p class="muted">سواء أردت بدء برنامج، أو التطوع، أو الصلاة معنا — اكتب لنا وسنرد عليك.</p>
       <dl class="contact-list">
         <div class="mail-row"><dt>البريد الإلكتروني</dt><dd class="lat" dir="ltr">jc.mena.ministry@gmail.com</dd><button type="button" class="copy-btn" data-copy="jc.mena.ministry@gmail.com">نسخ</button></div>
         <div><dt>نخدم في</dt><dd>مصر · لبنان · سوريا</dd></div>
-        <div><dt>تابع برامجنا</dt><dd><span class="socials" style="margin:6px 0 0"><a class="soc" href="https://www.youtube.com/@starbooksofficial" target="_blank" rel="noopener" aria-label="ستار بوكس على يوتيوب" title="ستار بوكس على يوتيوب"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12 31 31 0 0 0 1 16.8a3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1c.4-1.6.5-4.8.5-4.8s0-3.2-.5-4.8zM9.8 15.1V8.9L15.5 12z"/></svg></a><a class="soc" href="https://www.facebook.com/Starbooks.reviews" target="_blank" rel="noopener" aria-label="ستار بوكس على فيسبوك" title="ستار بوكس على فيسبوك"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M13.5 22v-8.2h2.8l.4-3.2h-3.2V8.5c0-.9.3-1.6 1.6-1.6h1.7V4.1c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.3H7.3v3.2h2.8V22z"/></svg></a><a class="soc" href="https://www.facebook.com/topteam4bible" target="_blank" rel="noopener" aria-label="توب تيم على فيسبوك" title="توب تيم على فيسبوك"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M13.5 22v-8.2h2.8l.4-3.2h-3.2V8.5c0-.9.3-1.6 1.6-1.6h1.7V4.1c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.3H7.3v3.2h2.8V22z"/></svg></a></span></dd></div>
+        <div><dt>تابع برامجنا</dt><dd><ul class="follow">
+          <li><span>ستار بوكس</span><span class="socials"><a class="soc" href="https://www.youtube.com/@starbooksofficial" target="_blank" rel="noopener" aria-label="ستار بوكس على يوتيوب" title="ستار بوكس على يوتيوب"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12 31 31 0 0 0 1 16.8a3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1c.4-1.6.5-4.8.5-4.8s0-3.2-.5-4.8zM9.8 15.1V8.9L15.5 12z"/></svg></a><a class="soc" href="https://www.facebook.com/Starbooks.reviews" target="_blank" rel="noopener" aria-label="ستار بوكس على فيسبوك" title="ستار بوكس على فيسبوك"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M13.5 22v-8.2h2.8l.4-3.2h-3.2V8.5c0-.9.3-1.6 1.6-1.6h1.7V4.1c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.3H7.3v3.2h2.8V22z"/></svg></a></span></li>
+          <li><span>توب تيم</span><span class="socials"><a class="soc" href="https://www.facebook.com/topteam4bible" target="_blank" rel="noopener" aria-label="توب تيم على فيسبوك" title="توب تيم على فيسبوك"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M13.5 22v-8.2h2.8l.4-3.2h-3.2V8.5c0-.9.3-1.6 1.6-1.6h1.7V4.1c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.3H7.3v3.2h2.8V22z"/></svg></a></span></li>
+        </ul></dd></div>
       </dl>
     </div>
     <form data-type="contact" data-success="وصلت رسالتك إلى فريق JC — سنرد عليك قريبًا." novalidate>
-  <div class="row2"><label for="c-name">الاسم<span class="req">*</span><input id="c-name" name="c-name" placeholder="اسمك بالكامل" required></label><label for="c-country">الدولة<select id="c-country" name="c-country"><option>مصر</option><option>لبنان</option><option>سوريا</option><option>دولة أخرى</option></select></label></div>
-<div class="row2"><label for="c-church">الكنيسة / المدرسة<input id="c-church" name="c-church" placeholder="اسم الكنيسة أو المدرسة"></label><label for="c-topic">الموضوع<select id="c-topic" name="c-topic"><option>طلب برنامج لكنيستي / مدرستي</option><option>التطوع</option><option>شريك صلاة</option><option>دعم الخدمة</option><option>أبلغني بالبرامج الجديدة</option><option>استفسار عام</option></select></label></div>
-<label for="c-contact">البريد أو رقم الهاتف / واتساب<span class="req">*</span><input id="c-contact" name="c-contact" placeholder="كيف نتواصل معك؟" required></label>
-<label for="c-msg">رسالتك<textarea id="c-msg" name="c-msg" placeholder="اكتب رسالتك هنا"></textarea></label>
+  <div class="row2"><label for="c-name"><span class="lbl">الاسم<span class="req" aria-hidden="true">*</span></span><input id="c-name" name="c-name" placeholder="اسمك بالكامل" required></label><label for="c-country"><span class="lbl">الدولة</span><select id="c-country" name="c-country"><option>مصر</option><option>لبنان</option><option>سوريا</option><option>دولة أخرى</option></select></label></div>
+  <div class="row2"><label for="c-church"><span class="lbl">الكنيسة / المدرسة</span><input id="c-church" name="c-church" placeholder="اسم الكنيسة أو المدرسة"></label><label for="c-topic"><span class="lbl">الموضوع</span><select id="c-topic" name="c-topic"><option>طلب برنامج لكنيستي / مدرستي</option><option>التطوع</option><option>شريك صلاة</option><option>دعم الخدمة</option><option>أبلغني بالبرامج الجديدة</option><option>استفسار عام</option></select></label></div>
+  <label for="c-contact"><span class="lbl">البريد أو رقم الهاتف / واتساب<span class="req" aria-hidden="true">*</span></span><input id="c-contact" name="c-contact" placeholder="كيف نتواصل معك؟" required></label>
+  <label for="c-msg"><span class="lbl">رسالتك</span><textarea id="c-msg" name="c-msg" placeholder="اكتب رسالتك هنا"></textarea></label>
   <div class="hp" aria-hidden="true"><label>اترك هذا فارغًا<input tabindex="-1" autocomplete="off"></label></div>
-  <button class="btn btn-brand" type="submit" style="justify-self:start">أرسل الرسالة</button>
+  <button class="btn btn-brand" type="submit">أرسل الرسالة</button>
   <p class="status" hidden></p>
-  <p class="form-note">بياناتك تصل إلى فريق JC فقط، ولا نشاركها مع أي جهة.</p>
+  <p class="form-note">بياناتك تصل إلى فريق JC فقط، ولا نشاركها مع أي جهة. <a href="privacy.html">سياسة الخصوصية</a></p>
 </form>
   </div>
 </section>
@@ -173,7 +193,7 @@
       <div>
         <a class="brand" href="index.html" style="margin-bottom:14px">
           <img class="brand-mark" src="assets/img/jc.webp" alt="">
-          <span class="brand-name lat">JC — Jesus Can</span>
+          <span class="brand-name lat" dir="ltr">JC — Jesus Can</span>
         </a>
         <p style="max-width:30em">برامج روحية وتعليمية تخدم الكنائس والمدارس في مصر ولبنان وسوريا.</p>
         <p style="margin-top:10px">راسلنا: <span class="lat" dir="ltr" style="color:var(--soft)">jc.mena.ministry@gmail.com</span></p>
@@ -188,7 +208,7 @@
       </div>
       <div>
         <h4>JC</h4>
-        <ul><li><a href="index.html#about">من نحن</a></li><li><a href="index.html#how">كيف نعمل</a></li><li><a href="index.html#involve">شارك معنا</a></li><li><a href="index.html#contact">تواصل</a></li></ul>
+        <ul><li><a href="index.html#about">من نحن</a></li><li><a href="index.html#how">كيف نعمل</a></li><li><a href="index.html#involve">شارك معنا</a></li><li><a href="index.html#contact">تواصل</a></li><li><a href="privacy.html">سياسة الخصوصية</a></li><li><a class="lang-foot" href="en/index.html" data-lang="en">English</a></li></ul>
       </div>
     </div>
     <div class="copy"><span>© ٢٠٢٦ JC — Jesus Can. جميع الحقوق محفوظة.</span><span>«كلمة الله… أجيال أقوى»</span></div>
