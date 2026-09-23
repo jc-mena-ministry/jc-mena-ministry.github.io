@@ -481,3 +481,10 @@ body[data-page="home"] .gallery{grid-template-columns:repeat(3,1fr)}
 .foot-logo{display:inline-block;margin-bottom:14px}
 .foot-logo img{width:150px;height:auto;filter:drop-shadow(0 0 20px rgba(250,204,21,.22))}
 @media (max-width:600px){.hero-logo{width:130px;margin-inline:auto;margin-bottom:14px}.brand-mark{height:40px}}
+/* Idrak lighthouse logo */
+.tile img.wide,.pcard .pc-logo img.wide{border-radius:0;filter:drop-shadow(0 0 16px rgba(250,204,21,.25))}
+.phero-art.logo-art img{border-radius:0;filter:drop-shadow(0 0 34px rgba(250,204,21,.28))}
+/* verse in Star Books purple */
+.verse{background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.45);box-shadow:0 0 26px rgba(168,85,247,.18),inset 0 0 22px rgba(168,85,247,.06)}
+.verse q{color:#c99bff;text-shadow:0 0 18px rgba(168,85,247,.45)}
+.verse cite{color:#a98bd6}
