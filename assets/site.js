@@ -4,7 +4,7 @@ import {
   getFirestore, collection, addDoc, doc, getDoc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-import { firebaseConfig, CONTACT_EMAIL } from "./config.js";
+import { firebaseConfig, CONTACT_EMAIL, YOUTUBE_API_KEY } from "./config.js";
 export const STARBOOKS_UPLOADS = "UUdzhbDbZrDT-7Mls7VhdVZQ"; // all channel uploads
 
 const EN = document.documentElement.lang === "en";
@@ -124,34 +124,76 @@ async function loadContent() {
     hBox.closest("[data-when]")?.classList.remove("hide");
   }
 
-  // featured videos (Star Books)
+  // featured videos (Star Books) — pinned above the full library
   const vids = (c.videos || []).map((v) => ({ ...v, id: youtubeId(v.url) })).filter((v) => v.id);
   const vBox = document.getElementById("vgrid");
   if (vBox && vids.length) {
-    vBox.innerHTML = vids.map((v) =>
-      `<button class="vcard" type="button" data-id="${v.id}"><div class="vthumb" style="background-image:url('https://i.ytimg.com/vi/${v.id}/hqdefault.jpg')"></div><div class="vt">${esc(L(v, "title") || T("فيديو", "Video"))}${L(v, "book") ? `<small>${esc(L(v, "book"))}</small>` : ""}</div></button>`).join("");
-    document.getElementById("lib-empty")?.classList.add("hide");
+    vBox.innerHTML = vids.map((v) => videoCard(v.id, L(v, "title") || T("فيديو", "Video"), L(v, "book"))).join("");
     vBox.closest("[data-when]")?.classList.remove("hide");
   }
 }
 
-/* player: switch between channel playlist and a chosen video */
-const frame = document.getElementById("player-frame");
-if (frame) {
-  document.addEventListener("click", (e) => {
-    const card = e.target.closest(".vcard");
-    if (card) {
-      frame.src = `https://www.youtube-nocookie.com/embed/${card.dataset.id}?autoplay=1&rel=0&hl=${EN ? "en" : "ar"}`;
-      document.querySelectorAll(".vcard.on").forEach((x) => x.classList.remove("on"));
-      card.classList.add("on");
-      frame.closest(".player").scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-    if (e.target.closest("#play-all")) {
-      frame.src = `https://www.youtube-nocookie.com/embed/videoseries?list=${STARBOOKS_UPLOADS}&rel=0`;
-      document.querySelectorAll(".vcard.on").forEach((x) => x.classList.remove("on"));
-    }
-  });
+/* ---------- Star Books: every video on the channel ---------- */
+function videoCard(id, title, sub) {
+  return `<a class="vcard" href="https://www.youtube.com/watch?v=${id}" target="_blank" rel="noopener">
+    <div class="vthumb" style="background-image:url('https://i.ytimg.com/vi/${id}/mqdefault.jpg')"></div>
+    <div class="vt">${esc(title)}${sub ? `<small>${esc(sub)}</small>` : ""}</div></a>`;
 }
+const norm = (x) => String(x || "").toLowerCase()
+  .replace(/[\u064B-\u0652\u0640]/g, "").replace(/[أإآ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه");
+
+async function fetchAllVideos() {
+  const CK = "jc-yt-v1", MAX_AGE = 6 * 3600 * 1000;
+  try { const c = JSON.parse(localStorage.getItem(CK) || "null"); if (c && Date.now() - c.t < MAX_AGE && c.items?.length) return c.items; } catch (e) {}
+  const items = []; let page = "";
+  for (let i = 0; i < 40; i++) {
+    const u = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${STARBOOKS_UPLOADS}&key=${YOUTUBE_API_KEY}${page ? "&pageToken=" + page : ""}`;
+    const r = await fetch(u); if (!r.ok) throw new Error("YouTube API " + r.status);
+    const j = await r.json();
+    for (const it of j.items || []) {
+      const sn = it.snippet || {}, id = sn.resourceId?.videoId;
+      if (!id || /^(Private|Deleted) video$/.test(sn.title)) continue;
+      items.push({ id, title: sn.title, date: sn.publishedAt });
+    }
+    if (!j.nextPageToken) break; page = j.nextPageToken;
+  }
+  try { localStorage.setItem(CK, JSON.stringify({ t: Date.now(), items })); } catch (e) {}
+  return items;
+}
+
+(async () => {
+  const grid = document.getElementById("vall"); if (!grid) return;
+  const more = document.getElementById("v-more"), count = document.getElementById("v-count"), search = document.getElementById("v-search");
+  const fallback = () => {
+    grid.remove(); document.querySelector(".lib-tools .v-search")?.remove(); more.hidden = true;
+    const fb = document.getElementById("v-fallback"), fr = document.getElementById("player-frame");
+    fr.src = fr.dataset.src; fb.hidden = false;
+    count.textContent = T("شغّل أي فيديو من قائمة المشغّل، أو افتح القناة.", "Play any video from the player list, or open the channel.");
+  };
+  if (!YOUTUBE_API_KEY) return fallback();
+  let all;
+  try { all = await fetchAllVideos(); } catch (e) { console.warn(e); return fallback(); }
+  if (!all.length) return fallback();
+  const fmt = new Intl.DateTimeFormat(EN ? "en-GB" : "ar-EG", { year: "numeric", month: "long" });
+  let list = all, shown = 0; const STEP = 24;
+  const render = (reset) => {
+    if (reset) { grid.innerHTML = ""; shown = 0; }
+    const next = list.slice(shown, shown + STEP);
+    grid.insertAdjacentHTML("beforeend", next.map((v) => videoCard(v.id, v.title, v.date ? fmt.format(new Date(v.date)) : "")).join(""));
+    shown += next.length;
+    more.hidden = shown >= list.length;
+    count.textContent = list.length === all.length
+      ? T(`${all.length} فيديو`, `${all.length} videos`)
+      : T(`${list.length} من ${all.length} فيديو`, `${list.length} of ${all.length} videos`);
+    if (!list.length) grid.innerHTML = `<p class="lib-empty">${T("مفيش فيديو بالاسم ده. جرّب كلمة تانية.", "No video matches that. Try another word.")}</p>`;
+    grid.setAttribute("aria-busy", "false");
+  };
+  more.addEventListener("click", () => render(false));
+  let tmr; search.addEventListener("input", () => { clearTimeout(tmr); tmr = setTimeout(() => {
+    const q = norm(search.value.trim()); list = q ? all.filter((v) => norm(v.title).includes(q)) : all; render(true);
+  }, 150); });
+  render(true);
+})();
 
 loadContent();
 

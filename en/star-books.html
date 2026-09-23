@@ -70,14 +70,23 @@
 
 <section class="block tight-top" id="library">
   <div class="wrap">
-    <div class="head"><span class="eyebrow">Video library</span><h2>Watch every Star Books video</h2><p>The player shows every video on our channel in order, and updates automatically with each new release.</p></div>
-    <div class="player"><iframe id="player-frame" src="https://www.youtube-nocookie.com/embed/videoseries?list=UUdzhbDbZrDT-7Mls7VhdVZQ&amp;rel=0&amp;hl=en" title="Star Books library" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
-    <div class="lib-bar">
-      <h3>Featured videos</h3>
-      <div class="prog-actions"><button class="btn btn-line" id="play-all" type="button">Play all videos</button><a class="btn btn-line" href="https://www.youtube.com/@starbooksofficial/videos" target="_blank" rel="noopener">Open the channel on YouTube</a></div>
+    <div class="head"><span class="eyebrow">Video library</span><h2>Every Star Books video</h2><p>Tap any video to watch it on YouTube. The list updates automatically with every new upload.</p></div>
+    <div class="featured hide" data-when>
+      <h3 class="lib-h">Featured videos</h3>
+      <div class="vgrid" id="vgrid"></div>
     </div>
-    <p class="lib-empty" id="lib-empty">Pick any video from the player’s list above, or open the channel to browse the full library.</p>
-    <div class="vgrid" id="vgrid"></div>
+    <div class="lib-tools">
+      <label class="v-search" for="v-search"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="v-search" type="search" placeholder="Search by book or video title…" aria-label="Search videos"></label>
+      <span class="v-count" id="v-count" aria-live="polite"></span>
+      <a class="btn btn-line" href="https://www.youtube.com/@starbooksofficial/videos" target="_blank" rel="noopener">Channel on YouTube</a>
+    </div>
+    <div class="vgrid vall" id="vall" aria-busy="true">
+      <div class="vcard sk"><div class="vthumb"></div><div class="vt"><span></span><span></span></div></div><div class="vcard sk"><div class="vthumb"></div><div class="vt"><span></span><span></span></div></div><div class="vcard sk"><div class="vthumb"></div><div class="vt"><span></span><span></span></div></div><div class="vcard sk"><div class="vthumb"></div><div class="vt"><span></span><span></span></div></div><div class="vcard sk"><div class="vthumb"></div><div class="vt"><span></span><span></span></div></div><div class="vcard sk"><div class="vthumb"></div><div class="vt"><span></span><span></span></div></div><div class="vcard sk"><div class="vthumb"></div><div class="vt"><span></span><span></span></div></div><div class="vcard sk"><div class="vthumb"></div><div class="vt"><span></span><span></span></div></div>
+    </div>
+    <div class="v-more-wrap"><button class="btn btn-line" id="v-more" type="button" hidden>Show more</button></div>
+    <div id="v-fallback" hidden>
+      <div class="player"><iframe id="player-frame" data-src="https://www.youtube-nocookie.com/embed/videoseries?list=UUdzhbDbZrDT-7Mls7VhdVZQ&amp;rel=0&amp;hl=en" title="Star Books library" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+    </div>
   </div>
 </section>
 

@@ -71,14 +71,23 @@
 
 <section class="block tight-top" id="library">
   <div class="wrap">
-    <div class="head"><span class="eyebrow">مكتبة الفيديوهات</span><h2>شاهد كل فيديوهات ستار بوكس</h2><p>المشغّل يعرض كل فيديوهات القناة بالترتيب، ويتحدّث تلقائيًا مع كل فيديو جديد ننشره.</p></div>
-    <div class="player"><iframe id="player-frame" src="https://www.youtube-nocookie.com/embed/videoseries?list=UUdzhbDbZrDT-7Mls7VhdVZQ&amp;rel=0&amp;hl=ar" title="مكتبة ستار بوكس" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
-    <div class="lib-bar">
-      <h3>فيديوهات مختارة</h3>
-      <div class="prog-actions"><button class="btn btn-line" id="play-all" type="button">تشغيل كل الفيديوهات</button><a class="btn btn-line" href="https://www.youtube.com/@starbooksofficial/videos" target="_blank" rel="noopener">افتح القناة على يوتيوب</a></div>
+    <div class="head"><span class="eyebrow">مكتبة الفيديوهات</span><h2>كل فيديوهات ستار بوكس</h2><p>دوس على أي فيديو عشان يفتح على يوتيوب. القائمة بتتحدّث لوحدها مع كل فيديو جديد على القناة.</p></div>
+    <div class="featured hide" data-when>
+      <h3 class="lib-h">فيديوهات مختارة</h3>
+      <div class="vgrid" id="vgrid"></div>
     </div>
-    <p class="lib-empty" id="lib-empty">اختر أي فيديو من قائمة المشغّل أعلاه، أو افتح القناة لتصفّح المكتبة كاملة.</p>
-    <div class="vgrid" id="vgrid"></div>
+    <div class="lib-tools">
+      <label class="v-search" for="v-search"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="v-search" type="search" placeholder="ابحث باسم الكتاب أو الفيديو…" aria-label="بحث في الفيديوهات"></label>
+      <span class="v-count" id="v-count" aria-live="polite"></span>
+      <a class="btn btn-line" href="https://www.youtube.com/@starbooksofficial/videos" target="_blank" rel="noopener">القناة على يوتيوب</a>
+    </div>
+    <div class="vgrid vall" id="vall" aria-busy="true">
+      <div class="vcard sk"><div class="vthumb"></div><div class="vt"><span></span><span></span></div></div><div class="vcard sk"><div class="vthumb"></div><div class="vt"><span></span><span></span></div></div><div class="vcard sk"><div class="vthumb"></div><div class="vt"><span></span><span></span></div></div><div class="vcard sk"><div class="vthumb"></div><div class="vt"><span></span><span></span></div></div><div class="vcard sk"><div class="vthumb"></div><div class="vt"><span></span><span></span></div></div><div class="vcard sk"><div class="vthumb"></div><div class="vt"><span></span><span></span></div></div><div class="vcard sk"><div class="vthumb"></div><div class="vt"><span></span><span></span></div></div><div class="vcard sk"><div class="vthumb"></div><div class="vt"><span></span><span></span></div></div>
+    </div>
+    <div class="v-more-wrap"><button class="btn btn-line" id="v-more" type="button" hidden>عرض المزيد</button></div>
+    <div id="v-fallback" hidden>
+      <div class="player"><iframe id="player-frame" data-src="https://www.youtube-nocookie.com/embed/videoseries?list=UUdzhbDbZrDT-7Mls7VhdVZQ&amp;rel=0&amp;hl=ar" title="مكتبة ستار بوكس" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+    </div>
   </div>
 </section>
 

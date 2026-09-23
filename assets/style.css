@@ -488,3 +488,23 @@ body[data-page="home"] .gallery{grid-template-columns:repeat(3,1fr)}
 .verse{background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.45);box-shadow:0 0 26px rgba(168,85,247,.18),inset 0 0 22px rgba(168,85,247,.06)}
 .verse q{color:#c99bff;text-shadow:0 0 18px rgba(168,85,247,.45)}
 .verse cite{color:#a98bd6}
+
+/* Star Books library */
+a.vcard{display:block;text-decoration:none}
+.vcard .vthumb{background-color:#11152a}
+.vcard .vt small{margin-top:4px}
+.lib-h{font-size:18px;margin-bottom:12px}
+.featured{margin-bottom:30px}
+.lib-tools{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:18px}
+.v-search{flex:1 1 280px;display:flex;align-items:center;gap:10px;padding:0 16px;border-radius:100px;background:var(--surface-2);border:1px solid var(--line);color:var(--muted)}
+.v-search:focus-within{border-color:var(--purple);box-shadow:0 0 0 3px rgba(168,85,247,.2)}
+.v-search input{border:0;background:none;padding:13px 0;outline:none;box-shadow:none}
+.v-count{color:var(--muted);font-size:14px;font-weight:700}
+.vall{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+.vcard.sk .vthumb{animation:sk 1.2s ease-in-out infinite alternate}
+.vcard.sk .vt span{display:block;height:10px;border-radius:6px;background:var(--track);margin:6px 0}
+.vcard.sk .vt span+span{width:60%}
+@keyframes sk{from{opacity:.45}to{opacity:.9}}
+.v-more-wrap{display:flex;justify-content:center;margin-top:22px}
+.vcard .vt{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+@media (max-width:600px){.vall{grid-template-columns:1fr 1fr;gap:10px}.vcard .vt{font-size:12.5px;padding:10px}.lib-tools .btn{flex:1 1 100%;justify-content:center}}
