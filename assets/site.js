@@ -195,6 +195,33 @@ async function fetchAllVideos() {
   render(true);
 })();
 
+/* ---------- moving photo backdrop (all pages) ---------- */
+(() => {
+  if (document.querySelector(".bg-photos")) return;
+  const pb = new URL("./photos/", import.meta.url).href, cb = new URL("./covers/", import.meta.url).href;
+  const photos = ["tt-2025-05-egypt","tt-2024-10-egypt-hall","tt-2023-05-lebanon-cup","tt-2024-08-egypt-group","tt-2022-11-lebanon",
+    "tt-2025-02-egypt","tt-2024-04-lebanon","tt-2024-11-egypt","tt-2023-05-lebanon-crowd","tt-2024-10-egypt-group",
+    "tt-2023-05-lebanon-hall","tt-2024-08-egypt-joy","tt-2022-11-lebanon-stage","tt-2024-11-egypt-smile","tt-2023-05-lebanon-cup2",
+    "tt-2024-08-egypt-winner","tt-2024-08-egypt-winner2"].map((n) => pb + n + "-sm.webp");
+  const covers = Array.from({ length: 53 }, (_, i) => cb + "c" + String(i).padStart(2, "0") + ".webp");
+  // shuffle covers once per visit, then alternate photo / cover / cover
+  for (let i = covers.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [covers[i], covers[j]] = [covers[j], covers[i]]; }
+  const P = []; let pi = 0, ci = 0;
+  while (ci < covers.length) { P.push(photos[pi++ % photos.length]); P.push(covers[ci++]); if (ci < covers.length) P.push(covers[ci++]); }
+  const cols = innerWidth < 600 ? 3 : innerWidth < 1100 ? 4 : 6;
+  const layer = document.createElement("div");
+  layer.className = "bg-photos"; layer.setAttribute("aria-hidden", "true");
+  let html = "";
+  for (let c = 0; c < cols; c++) {
+    const items = [];
+    for (let i = 0; i < 6; i++) items.push(P[(c * 6 + i) % P.length]);
+    const strip = items.map((src) => `<span style="background-image:url('${src}')"></span>`).join("");
+    html += `<div class="bp-col ${c % 2 ? "down" : "up"}" style="--d:${150 + (c % 3) * 30}s"><div class="bp-track">${strip}${strip}</div></div>`;
+  }
+  layer.innerHTML = html;
+  document.body.prepend(layer);
+})();
+
 loadContent();
 
 /* ---------- photo viewer ---------- */

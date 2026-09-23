@@ -1,3 +1,4 @@
+[hidden]{display:none!important}
 
 :root{
   color-scheme:dark;
@@ -508,3 +509,19 @@ a.vcard{display:block;text-decoration:none}
 .v-more-wrap{display:flex;justify-content:center;margin-top:22px}
 .vcard .vt{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 @media (max-width:600px){.vall{grid-template-columns:1fr 1fr;gap:10px}.vcard .vt{font-size:12.5px;padding:10px}.lib-tools .btn{flex:1 1 100%;justify-content:center}}
+
+/* moving photo backdrop */
+.bg-photos{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;gap:14px;padding-inline:7px;opacity:.25;overflow:hidden;
+  -webkit-mask-image:linear-gradient(to bottom,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 12%,#000 88%,transparent)}
+.bp-col{flex:1;min-width:0;overflow:hidden}
+.bp-track{display:flex;flex-direction:column;gap:14px;will-change:transform;animation:bp-up var(--d,160s) linear infinite}
+.bp-col.down .bp-track{animation-name:bp-down}
+.bp-track span{display:block;aspect-ratio:4/3;border-radius:16px;background:#11152a center/cover no-repeat;filter:saturate(.85)}
+@keyframes bp-up{from{transform:translateY(0)}to{transform:translateY(calc(-50% - 7px))}}
+@keyframes bp-down{from{transform:translateY(calc(-50% - 7px))}to{transform:translateY(0)}}
+@media (prefers-reduced-motion: reduce){.bp-track{animation:none!important}}
+@media (max-width:600px){.bg-photos{gap:10px;padding-inline:5px}.bp-track{gap:10px}.bp-track span{border-radius:12px}}
+/* keep text crisp over the photo backdrop */
+main h1,main h2,main h3,main p,main li,main dt,main dd,main cite,main .en-sub,main .crumbs,.eyebrow{text-shadow:0 1px 2px rgba(5,8,22,.95),0 0 14px rgba(5,8,22,.9),0 0 28px rgba(5,8,22,.75)}
+.hero-lead,.phero .lead,.head p{color:var(--soft)}
+.hero h1 em,.grad,.stat b,.nf b{text-shadow:none;filter:drop-shadow(0 0 10px rgba(5,8,22,.9))}
