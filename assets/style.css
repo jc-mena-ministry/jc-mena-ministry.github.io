@@ -525,3 +525,18 @@ a.vcard{display:block;text-decoration:none}
 main h1,main h2,main h3,main p,main li,main dt,main dd,main cite,main .en-sub,main .crumbs,.eyebrow{text-shadow:0 1px 2px rgba(5,8,22,.95),0 0 14px rgba(5,8,22,.9),0 0 28px rgba(5,8,22,.75)}
 .hero-lead,.phero .lead,.head p{color:var(--soft)}
 .hero h1 em,.grad,.stat b,.nf b{text-shadow:none;filter:drop-shadow(0 0 10px rgba(5,8,22,.9))}
+
+/* ===== Program vision ===== */
+.vision{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.vcardx{padding:24px;border-radius:18px;background:var(--surface-2);border:1px solid var(--line);transition:.2s}
+.vcardx:hover{border-color:var(--purple)}
+.vcardx h3{font-size:19px;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:12px}
+.vcardx h3 svg{flex:none;width:44px;height:44px;padding:11px;border-radius:14px;background:rgba(168,85,247,.16);color:var(--purple)}
+.vcardx:nth-child(4n+2) h3 svg{background:rgba(6,182,212,.16);color:var(--cyan)}
+.vcardx:nth-child(4n+3) h3 svg{background:rgba(250,204,21,.14);color:var(--gold)}
+.vcardx:nth-child(4n+4) h3 svg{background:rgba(74,222,128,.16);color:var(--green)}
+.vcardx p,.vcardx li{color:var(--muted);font-size:14.5px;line-height:1.85}
+.vcardx ul{margin:8px 0 0;padding-inline-start:20px;display:grid;gap:6px}
+.vcardx li b{color:#fff}
+.vcardx.wide{grid-column:1/-1}
+@media(max-width:600px){.vision{grid-template-columns:1fr}.vcardx{padding:18px}}
