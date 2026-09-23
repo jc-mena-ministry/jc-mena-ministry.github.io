@@ -475,3 +475,9 @@ label.check input{width:20px;height:20px;flex:none;margin-top:3px;accent-color:v
 .season.start{grid-column:1/-1;flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px 16px}
 body[data-page="home"] .gallery{grid-template-columns:repeat(3,1fr)}
 @media (max-width:600px){body[data-page="home"] .gallery{grid-template-columns:1fr 1fr}}
+/* new JC logo */
+.brand-mark{height:46px;width:auto;filter:drop-shadow(0 0 10px rgba(250,204,21,.35))}
+.hero-logo{display:block;width:170px;height:auto;margin:0 0 18px;filter:drop-shadow(0 0 28px rgba(250,204,21,.28))}
+.foot-logo{display:inline-block;margin-bottom:14px}
+.foot-logo img{width:150px;height:auto;filter:drop-shadow(0 0 20px rgba(250,204,21,.22))}
+@media (max-width:600px){.hero-logo{width:130px;margin-inline:auto;margin-bottom:14px}.brand-mark{height:40px}}
