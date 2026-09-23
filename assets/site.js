@@ -1,7 +1,7 @@
 // JC — Jesus Can · shared site script (menu, forms → Firestore, live content)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
-  getFirestore, collection, addDoc, doc, getDoc, serverTimestamp
+  getFirestore, collection, addDoc, doc, getDoc, getDocs, query, orderBy, limit, startAfter, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 import { firebaseConfig, CONTACT_EMAIL, YOUTUBE_API_KEY } from "./config.js";
@@ -133,6 +133,76 @@ async function loadContent() {
   }
 }
 
+/* ---------- editable texts + contact info (doc: jc_site/texts), edited from admin.html ---------- */
+const flat = (x) => String(x || "").replace(/\s+/g, " ").trim();
+const md2html = (x) => esc(x).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/\*(.+?)\*/g, "<em>$1</em>").replace(/\n/g, "<br>");
+const ORIG = new Map();
+function applyTexts(tx) {
+  if (!tx) return;
+  document.querySelectorAll("[data-k]").forEach((el) => {
+    if (!ORIG.has(el)) ORIG.set(el, { html: el.innerHTML, text: flat(el.textContent) });
+    const o = tx[el.dataset.k], orig = ORIG.get(el);
+    const val = o && (EN ? o.en : o.ar), src = o && (EN ? o.src_en : o.src_ar);
+    if (!val || orig.text !== flat(src)) { if (el.dataset.edited) { el.innerHTML = orig.html; delete el.dataset.edited; } return; }
+    let keep = "";
+    for (const n of el.childNodes) { if (n.nodeType === 1) { if (n.tagName.toLowerCase() === "svg") keep = n.outerHTML; break; } if (n.textContent.trim()) break; }
+    el.innerHTML = keep + md2html(val); el.dataset.edited = "1";
+  });
+  const c = tx._contact || {};
+  if (c.email) {
+    document.querySelectorAll("[data-email]").forEach((el) => (el.textContent = c.email));
+    document.querySelectorAll("[data-copy]").forEach((el) => el.setAttribute("data-copy", c.email));
+  }
+  const list = document.querySelector(".contact-list"), old = document.getElementById("wa-row");
+  const wa = String(c.whatsapp || "").replace(/[^\d]/g, "");
+  if (old) old.remove();
+  if (list && wa.length >= 8) {
+    list.querySelector(".mail-row")?.insertAdjacentHTML("afterend",
+      `<div id="wa-row"><dt>${T("واتساب", "WhatsApp")}</dt><dd class="lat" dir="ltr"><a href="https://wa.me/${wa}" target="_blank" rel="noopener">+${wa}</a></dd></div>`);
+  }
+}
+(async () => {
+  const CK = "jc-tx-v1";
+  try { applyTexts(JSON.parse(localStorage.getItem(CK) || "null")); } catch (e) {}
+  try {
+    const snap = await getDoc(doc(db, "jc_site", "texts"));
+    const tx = snap.exists() ? snap.data() : {};
+    applyTexts(tx);
+    try { localStorage.setItem(CK, JSON.stringify(tx)); } catch (e) {}
+  } catch (e) { console.warn("texts not loaded", e); }
+})();
+
+/* ---------- Top Team photos uploaded from the admin panel (jc_photos + jc_photo_full) ---------- */
+const FULL = new Map();
+async function fullPhoto(id) {
+  if (!FULL.has(id)) FULL.set(id, getDoc(doc(db, "jc_photo_full", id)).then((s) => (s.exists() ? s.data().data : null)).catch(() => null));
+  return FULL.get(id);
+}
+(async () => {
+  const g = document.getElementById("gallery");
+  if (!g || PAGE !== "topteam") return;
+  const STEP = 12; let last = null;
+  const firstStatic = g.firstElementChild;
+  const more = document.createElement("p");
+  more.style.marginTop = "18px"; more.hidden = true;
+  more.innerHTML = `<button class="btn btn-line" type="button">${T("صور أكتر", "More photos")}</button>`;
+  g.after(more);
+  const load = async () => {
+    const col = collection(db, "jc_photos");
+    const q = last ? query(col, orderBy("createdAt", "desc"), startAfter(last), limit(STEP)) : query(col, orderBy("createdAt", "desc"), limit(STEP));
+    let snap; try { snap = await getDocs(q); } catch (e) { console.warn("photos not loaded", e); return; }
+    const html = snap.docs.map((d) => {
+      const p = d.data(), cap = L(p, "caption") || "";
+      return `<figure><a class="gl" href="#photo" data-fid="${esc(d.id)}" data-cap="${esc(cap)}"><img src="${esc(p.thumb)}" alt="${esc(cap)}" loading="lazy" width="${+p.tw || 640}" height="${+p.th || 466}"></a>${cap ? `<figcaption>${esc(cap)}</figcaption>` : ""}</figure>`;
+    }).join("");
+    if (firstStatic) firstStatic.insertAdjacentHTML("beforebegin", html); else g.insertAdjacentHTML("beforeend", html);
+    if (snap.docs.length) { last = snap.docs[snap.docs.length - 1]; g.closest("[data-when]")?.classList.remove("hide"); }
+    more.hidden = snap.docs.length < STEP;
+  };
+  more.querySelector("button").addEventListener("click", load);
+  load();
+})();
+
 /* ---------- Star Books: every video on the channel ---------- */
 function videoCard(id, title, sub) {
   return `<a class="vcard" href="https://www.youtube.com/watch?v=${id}" target="_blank" rel="noopener">
@@ -252,7 +322,12 @@ loadContent();
   const show = (i) => {
     const L = links(); if (!L.length) return;
     idx = (i + L.length) % L.length;
-    img.src = L[idx].href; img.alt = L[idx].dataset.cap || ""; cap.textContent = L[idx].dataset.cap || "";
+    const a = L[idx];
+    img.alt = a.dataset.cap || ""; cap.textContent = a.dataset.cap || "";
+    if (a.dataset.fid) {
+      img.src = a.querySelector("img")?.src || "";
+      fullPhoto(a.dataset.fid).then((u) => { if (u && links()[idx] === a) img.src = u; });
+    } else img.src = a.href;
   };
   const close = () => { box.hidden = true; document.body.style.overflow = ""; };
   document.addEventListener("click", (e) => {

@@ -44,6 +44,27 @@
 .erow .x{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:#f9a8d4;cursor:pointer;font-size:18px}
 .save-bar{position:sticky;bottom:calc(12px + env(safe-area-inset-bottom,0px));display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:rgba(12,16,36,.92);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:16px;padding:12px 16px}
 .login{max-width:420px;margin:60px auto}
+.phq{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-top:14px}
+.phc{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:10px;display:grid;gap:8px;align-content:start}
+.phc img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;background:var(--surface)}
+.phc input{padding:9px 11px;font-size:14px}
+.phc .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.phc .st{font-size:12.5px;color:var(--muted)}
+.phc.ok{border-color:rgba(74,222,128,.5)}.phc.bad{border-color:rgba(236,72,153,.6)}
+.txi{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:12px;display:grid;gap:8px}
+.txi.chg{border-color:rgba(250,204,21,.55)}
+.txh{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.txg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.txg textarea{min-height:0;padding:10px 12px;font-size:14.5px;line-height:1.7;resize:vertical}
+.txg textarea[dir=ltr]{font-family:var(--lat)}
+.txr{background:none;border:0;color:var(--cyan);font:700 13px/1 var(--body);cursor:pointer;padding:4px}
+.txlist{display:grid;gap:18px}
+.txlist section{background:var(--surface-2);border:1px solid var(--line);border-radius:18px;padding:18px;display:grid;gap:10px}
+.txlist h2{font-size:17px}
+.txlist h2 small{color:var(--muted);font-weight:600;font-size:13px}
+.kv2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:700px){.txg,.kv2{grid-template-columns:1fr}}
+
 @media (max-width:980px){.erow{grid-template-columns:1fr 1fr!important}.erow .x{justify-self:start}}
 @media (max-width:600px){.erow{grid-template-columns:1fr!important;padding:12px;border:1px solid var(--line);border-radius:12px}.kv{grid-template-columns:1fr}.adm-top h1{font-size:22px}.bar select,.bar .btn{flex:1 1 45%}}
 </style>
@@ -72,7 +93,9 @@
     <div class="adm-top"><h1>أهلًا بك</h1><span class="count" id="who"></span></div>
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" aria-selected="true" data-tab="subs" id="tab-subs">الطلبات</button>
-      <button class="tab" role="tab" aria-selected="false" data-tab="content" id="tab-content">محتوى الموقع</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="photos" id="tab-photos">صور المسابقة</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="texts" id="tab-texts">نصوص الموقع والتواصل</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="content" id="tab-content">أرقام وفيديوهات ونتائج</button>
     </div>
 
     <!-- submissions -->
@@ -97,6 +120,44 @@
       <div class="subs" id="subs"></div>
     </div>
 
+    <!-- competition photos -->
+    <div id="pane-photos" class="hide">
+      <div class="ed">
+        <section>
+          <h2>إضافة صور جديدة لتوب تيم</h2>
+          <p class="hint">اختار صورة أو أكتر من الكمبيوتر أو الموبايل. الصور بتتصغّر تلقائيًا قبل الرفع، وبتظهر في أول معرض الصور في صفحة توب تيم (الأحدث الأول). الوصف اختياري.</p>
+          <div class="bar"><button class="btn btn-line" id="ph-pick" type="button">+ اختار الصور</button><input type="file" id="ph-files" accept="image/*" multiple hidden><button class="btn btn-brand" id="ph-up" type="button" hidden>رفع ونشر الصور</button><span class="count" id="ph-msg"></span></div>
+          <div class="phq" id="ph-queue"></div>
+        </section>
+        <section>
+          <h2>الصور المنشورة <span class="count" id="ph-count"></span></h2>
+          <p class="hint">تقدر تعدّل الوصف أو تحذف أي صورة. (الصور الأساسية اللي جوه الموقع مش ظاهرة هنا.)</p>
+          <div class="phq" id="ph-list"></div>
+        </section>
+      </div>
+    </div>
+
+    <!-- site texts -->
+    <div id="pane-texts" class="hide">
+      <div class="ed">
+        <section>
+          <h2>بيانات التواصل</h2>
+          <p class="hint">الإيميل ده بيظهر في قسم «تواصل» وأسفل كل الصفحات. رقم الواتساب اختياري: اكتبه بكود الدولة (مثال: 201001234567) وهيظهر كزرار في قسم التواصل. سيبه فاضي لو مش عايزه يظهر.</p>
+          <div class="kv2">
+            <label>الإيميل<input id="ct-email" type="email" dir="ltr" placeholder="jc.mena.ministry@gmail.com"></label>
+            <label>واتساب (اختياري)<input id="ct-wa" type="tel" dir="ltr" placeholder="201001234567"></label>
+          </div>
+        </section>
+        <section>
+          <h2>نصوص الصفحات</h2>
+          <p class="hint">اختار الصفحة، وعدّل أي عنوان أو فقرة بالعربي (يمين) وبالإنجليزي (شمال). للخط العريض حط الكلمة بين نجمتين مزدوجتين كده: <b>**كلمة**</b>. أي نص تغيّره بيتلوّن بالأصفر، وزرار «↺ الأصل» يرجّعه زي ما كان.</p>
+          <div class="bar"><select id="tx-page" aria-label="الصفحة"></select><input id="tx-q" type="search" placeholder="ابحث في كل النصوص…" style="flex:1;min-width:180px;width:auto"><span class="count" id="tx-count"></span></div>
+        </section>
+        <div class="txlist" id="tx-list"></div>
+        <div class="save-bar"><span class="count" id="tx-msg">التعديلات لا تظهر في الموقع قبل الحفظ.</span><button class="btn btn-brand" id="tx-save" type="button">حفظ ونشر النصوص</button></div>
+      </div>
+    </div>
+
     <!-- content editor -->
     <div id="pane-content" class="hide">
       <div class="ed">
@@ -113,8 +174,8 @@
           <button class="btn btn-line sm" type="button" data-add="videos" style="margin-top:10px">+ فيديو</button>
         </section>
         <section>
-          <h2>الصور</h2>
-          <p class="hint">ارفع الصورة على GitHub داخل فولدر <span class="lat" dir="ltr">assets/photos</span>، ثم اكتب هنا مسارها، مثال: <span class="lat" dir="ltr">assets/photos/final-2026.jpg</span>. صور كل برنامج تظهر في صفحته، وكلها تظهر في الرئيسية.</p>
+          <h2>صور بمسار على GitHub (متقدم)</h2>
+          <p class="hint">لرفع صور من جهازك استخدم تبويب «صور المسابقة». القسم ده للصور الموجودة على GitHub بس: ارفع الصورة داخل فولدر <span class="lat" dir="ltr">assets/photos</span>، ثم اكتب هنا مسارها، مثال: <span class="lat" dir="ltr">assets/photos/final-2026.jpg</span>. صور كل برنامج تظهر في صفحته، وكلها تظهر في الرئيسية.</p>
           <div class="rows" id="ed-gallery"></div>
           <button class="btn btn-line sm" type="button" data-add="gallery" style="margin-top:10px">+ صورة</button>
         </section>
@@ -132,7 +193,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, getDocs, query, orderBy, doc, updateDoc, deleteDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, getDocs, query, orderBy, doc, updateDoc, deleteDoc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { firebaseConfig } from "./assets/config.js";
 
@@ -159,14 +220,13 @@ onAuthStateChanged(auth, (u) => {
   $("login").classList.toggle("hide", !!u);
   $("panel").classList.toggle("hide", !u);
   $("out").classList.toggle("hide", !u);
-  if (u) { $("who").textContent = u.email; loadSubs(); loadContent(); }
+  if (u) { $("who").textContent = u.email; loadSubs(); loadContent(); loadPhotos(); loadTexts(); }
 });
 
 /* ---------- tabs ---------- */
 document.querySelectorAll(".tab").forEach((t) => t.addEventListener("click", () => {
   document.querySelectorAll(".tab").forEach((x) => x.setAttribute("aria-selected", x === t));
-  $("pane-subs").classList.toggle("hide", t.dataset.tab !== "subs");
-  $("pane-content").classList.toggle("hide", t.dataset.tab !== "content");
+  ["subs", "photos", "texts", "content"].forEach((p) => $("pane-" + p).classList.toggle("hide", t.dataset.tab !== p));
 }));
 
 /* ---------- submissions ---------- */
@@ -282,6 +342,170 @@ $("save").addEventListener("click", async () => {
   catch (err) { console.error(err); $("save-msg").textContent = "تعذّر الحفظ. تأكد من نشر قواعد Firestore الجديدة."; }
   finally { b.disabled = false; }
 });
+
+/* ---------- competition photos (jc_photos: thumb + captions, jc_photo_full: big image) ---------- */
+const QUEUE = [];
+const loadImg = (file) => new Promise((ok, bad) => { const i = new Image(); i.onload = () => ok(i); i.onerror = bad; i.src = URL.createObjectURL(file); });
+function shrink(img, max, q) {
+  const k = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+  const c = document.createElement("canvas");
+  c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k);
+  c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+  let url = c.toDataURL("image/webp", q);
+  if (!url.startsWith("data:image/webp")) url = c.toDataURL("image/jpeg", q);
+  return { url, w: c.width, h: c.height };
+}
+function bigEnough(img) {
+  for (const [max, q] of [[1600, .82], [1600, .7], [1400, .62], [1200, .55], [1000, .5], [800, .5]]) {
+    const r = shrink(img, max, q); if (r.url.length < 900000) return r;
+  }
+  return null;
+}
+$("ph-pick").addEventListener("click", () => $("ph-files").click());
+$("ph-files").addEventListener("change", () => {
+  [...$("ph-files").files].forEach((file) => QUEUE.push({ file, key: Math.random().toString(36).slice(2), url: URL.createObjectURL(file) }));
+  $("ph-files").value = ""; renderQueue();
+});
+function renderQueue() {
+  $("ph-queue").innerHTML = QUEUE.map((x) => `
+    <div class="phc" data-key="${x.key}"><img src="${x.url}" alt="">
+      <input data-f="caption" placeholder="وصف بالعربي (اختياري)" value="${esc(x.caption || "")}">
+      <input data-f="caption_en" dir="ltr" placeholder="English caption (optional)" value="${esc(x.caption_en || "")}">
+      <div class="row"><button class="btn btn-line sm danger" data-act="unq" type="button">إلغاء</button><span class="st"></span></div></div>`).join("");
+  $("ph-up").hidden = !QUEUE.length;
+  $("ph-msg").textContent = QUEUE.length ? `${QUEUE.length} صورة جاهزة للرفع` : "";
+}
+$("ph-queue").addEventListener("input", (e) => { const c = e.target.closest(".phc"); const x = QUEUE.find((q) => q.key === c.dataset.key); if (x) x[e.target.dataset.f] = e.target.value; });
+$("ph-queue").addEventListener("click", (e) => {
+  if (e.target.dataset.act !== "unq") return;
+  const k = e.target.closest(".phc").dataset.key; const i = QUEUE.findIndex((q) => q.key === k); if (i > -1) QUEUE.splice(i, 1); renderQueue();
+});
+$("ph-up").addEventListener("click", async () => {
+  const b = $("ph-up"); b.disabled = true; $("ph-pick").disabled = true;
+  let done = 0, fail = 0;
+  for (const x of [...QUEUE]) {
+    const card = $("ph-queue").querySelector(`[data-key="${x.key}"]`), st = card.querySelector(".st");
+    card.querySelector("[data-act]")?.remove();
+    st.textContent = "جارٍ التجهيز…";
+    try {
+      const img = await loadImg(x.file);
+      const full = bigEnough(img), thumb = shrink(img, 720, .72);
+      if (!full) throw new Error("too big");
+      st.textContent = "جارٍ الرفع…";
+      const ref = doc(collection(db, "jc_photos"));
+      await setDoc(doc(db, "jc_photo_full", ref.id), { data: full.url });
+      await setDoc(ref, { thumb: thumb.url, tw: thumb.w, th: thumb.h, caption: (x.caption || "").trim(), caption_en: (x.caption_en || "").trim(), createdAt: serverTimestamp() });
+      card.classList.add("ok"); st.textContent = "تم النشر ✓"; done++;
+      QUEUE.splice(QUEUE.indexOf(x), 1);
+    } catch (err) {
+      console.error(err); card.classList.add("bad"); fail++;
+      st.textContent = "تعذّر الرفع — تأكد من نشر قواعد Firestore الجديدة، أو جرّب صورة تانية.";
+    }
+  }
+  b.disabled = false; $("ph-pick").disabled = false;
+  $("ph-msg").textContent = `تم نشر ${done} صورة` + (fail ? ` · ${fail} لم تُرفع` : "");
+  if (!QUEUE.length) { b.hidden = true; setTimeout(() => { if (!QUEUE.length) $("ph-queue").innerHTML = ""; }, 2500); }
+  loadPhotos();
+});
+let PHOTOS = [];
+async function loadPhotos() {
+  try {
+    const snap = await getDocs(query(collection(db, "jc_photos"), orderBy("createdAt", "desc")));
+    PHOTOS = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  } catch (e) { console.warn(e); $("ph-list").innerHTML = '<p class="status err">تعذّر تحميل الصور. تأكد من نشر قواعد Firestore الجديدة.</p>'; return; }
+  $("ph-count").textContent = `(${PHOTOS.length})`;
+  $("ph-list").innerHTML = PHOTOS.length ? PHOTOS.map((p) => `
+    <div class="phc" data-id="${p.id}"><img src="${esc(p.thumb)}" alt="" loading="lazy">
+      <input data-f="caption" placeholder="وصف بالعربي" value="${esc(p.caption || "")}">
+      <input data-f="caption_en" dir="ltr" placeholder="English caption" value="${esc(p.caption_en || "")}">
+      <div class="row"><button class="btn btn-line sm" data-act="cap" type="button">حفظ الوصف</button><button class="btn btn-line sm danger" data-act="del" type="button">حذف</button><span class="st"></span></div></div>`).join("")
+    : '<p class="count">لسه مفيش صور مرفوعة من هنا.</p>';
+}
+$("ph-list").addEventListener("click", async (e) => {
+  const b = e.target.closest("button[data-act]"); if (!b) return;
+  const card = b.closest(".phc"), id = card.dataset.id, st = card.querySelector(".st");
+  if (b.dataset.act === "cap") {
+    b.disabled = true;
+    try {
+      await updateDoc(doc(db, "jc_photos", id), { caption: card.querySelector('[data-f="caption"]').value.trim(), caption_en: card.querySelector('[data-f="caption_en"]').value.trim() });
+      st.textContent = "اتحفظ ✓";
+    } catch (err) { st.textContent = "تعذّر الحفظ"; } finally { b.disabled = false; }
+  }
+  if (b.dataset.act === "del") {
+    if (!b.dataset.sure) { b.dataset.sure = "1"; b.textContent = "اضغط تاني للتأكيد"; setTimeout(() => { delete b.dataset.sure; b.textContent = "حذف"; }, 3000); return; }
+    try { await deleteDoc(doc(db, "jc_photos", id)); await deleteDoc(doc(db, "jc_photo_full", id)); card.remove(); PHOTOS = PHOTOS.filter((p) => p.id !== id); $("ph-count").textContent = `(${PHOTOS.length})`; }
+    catch (err) { b.textContent = "تعذّر الحذف"; }
+  }
+});
+
+/* ---------- site texts (defaults: assets/texts.json · edits: jc_site/texts) ---------- */
+let TXP = [], DEF = {}, OV = {}, TXDIRTY = false;
+const flat = (x) => String(x || "").replace(/\s+/g, " ").trim();
+const KIND = { h1: "عنوان رئيسي", h2: "عنوان", h3: "عنوان فرعي", h4: "عنوان صغير", p: "فقرة", li: "نقطة", a: "زرار / لينك", summary: "سؤال", dt: "عنوان", dd: "نص", th: "عمود", q: "آية", cite: "الشاهد" };
+const normAr = (x) => String(x || "").toLowerCase().replace(/[ً-ْـ]/g, "").replace(/[أإآ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه");
+async function loadTexts() {
+  try {
+    const r = await fetch("assets/texts.json", { cache: "no-cache" }); TXP = (await r.json()).pages;
+    TXP.forEach((p) => p.groups.forEach((g) => g.items.forEach((it) => (DEF[it.k] = { ...it, page: p.name, group: g.title }))));
+    const s = await getDoc(doc(db, "jc_site", "texts")); const d = s.exists() ? s.data() : {};
+    $("ct-email").value = d._contact?.email || ""; $("ct-wa").value = d._contact?.whatsapp || "";
+    Object.entries(d).forEach(([k, v]) => { const df = DEF[k]; if (df && v && flat(v.src_ar) === df.p_ar && flat(v.src_en) === df.p_en) OV[k] = v; });
+  } catch (e) { console.warn(e); $("tx-list").innerHTML = '<p class="status err">تعذّر تحميل النصوص.</p>'; return; }
+  $("tx-page").innerHTML = TXP.map((p, i) => `<option value="${i}">${esc(p.name)}</option>`).join("");
+  renderTexts();
+}
+const curVal = (k, l) => (OV[k] ? OV[k][l] : DEF[k][l]);
+function itemHTML(it) {
+  const ar = curVal(it.k, "ar"), en = curVal(it.k, "en"), rows = (x) => Math.min(9, Math.max(1, Math.ceil(x.length / 60) + (x.match(/\n/g) || []).length));
+  return `<div class="txi${OV[it.k] ? " chg" : ""}" data-k="${it.k}">
+    <div class="txh"><span class="pill">${KIND[it.tag] || "نص"}</span><button class="txr" data-act="reset" type="button"${OV[it.k] ? "" : " hidden"}>↺ الأصل</button></div>
+    <div class="txg"><textarea dir="rtl" data-l="ar" rows="${rows(ar)}" aria-label="بالعربي">${esc(ar)}</textarea><textarea dir="ltr" data-l="en" rows="${rows(en)}" aria-label="English">${esc(en)}</textarea></div></div>`;
+}
+function renderTexts() {
+  const q = normAr($("tx-q").value.trim());
+  let html = "", n = 0;
+  if (q) {
+    const hits = Object.values(DEF).filter((it) => normAr(curVal(it.k, "ar") + " " + curVal(it.k, "en") + " " + it.ar + " " + it.en).includes(q));
+    n = hits.length;
+    const byGroup = {}; hits.forEach((it) => { const g = it.page + " — " + it.group; (byGroup[g] = byGroup[g] || []).push(it); });
+    html = Object.entries(byGroup).map(([g, items]) => `<section><h2>${esc(g)}</h2>${items.map(itemHTML).join("")}</section>`).join("");
+  } else {
+    const p = TXP[+$("tx-page").value || 0];
+    html = p.groups.map((g) => { n += g.items.length; return `<section><h2>${esc(g.title)} <small>(${g.items.length})</small></h2>${g.items.map(itemHTML).join("")}</section>`; }).join("");
+  }
+  $("tx-list").innerHTML = html || '<p class="count">مفيش نص فيه الكلمة دي.</p>';
+  $("tx-count").textContent = `${n} نص · ${Object.keys(OV).length} متعدّل`;
+}
+function txDirty() { TXDIRTY = true; $("tx-msg").textContent = "لديك تعديلات لم تُحفظ."; }
+$("tx-page").addEventListener("change", renderTexts);
+let txT; $("tx-q").addEventListener("input", () => { clearTimeout(txT); txT = setTimeout(renderTexts, 200); });
+$("ct-email").addEventListener("input", txDirty); $("ct-wa").addEventListener("input", txDirty);
+$("tx-list").addEventListener("input", (e) => {
+  const box = e.target.closest(".txi"); if (!box) return;
+  const k = box.dataset.k, d = DEF[k];
+  const ar = box.querySelector('[data-l="ar"]').value, en = box.querySelector('[data-l="en"]').value;
+  if (ar.trim() === d.ar && en.trim() === d.en) delete OV[k];
+  else OV[k] = { ar: ar.trim(), en: en.trim(), src_ar: d.p_ar, src_en: d.p_en };
+  box.classList.toggle("chg", !!OV[k]); box.querySelector(".txr").hidden = !OV[k];
+  $("tx-count").textContent = $("tx-count").textContent.replace(/\d+ متعدّل/, Object.keys(OV).length + " متعدّل");
+  txDirty();
+});
+$("tx-list").addEventListener("click", (e) => {
+  if (e.target.dataset.act !== "reset") return;
+  const box = e.target.closest(".txi"), k = box.dataset.k;
+  delete OV[k]; box.outerHTML = itemHTML(DEF[k]); txDirty();
+});
+$("tx-save").addEventListener("click", async () => {
+  const b = $("tx-save"), em = $("ct-email").value.trim();
+  if (em && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { $("tx-msg").textContent = "الإيميل مكتوب غلط."; return; }
+  b.disabled = true;
+  try {
+    await setDoc(doc(db, "jc_site", "texts"), { ...OV, _contact: { email: em, whatsapp: $("ct-wa").value.trim() } });
+    TXDIRTY = false; $("tx-msg").textContent = "تم الحفظ — التعديلات ظاهرة الآن على الموقع.";
+  } catch (err) { console.error(err); $("tx-msg").textContent = "تعذّر الحفظ. تأكد إنك داخل بحساب الإدارة."; }
+  finally { b.disabled = false; }
+});
+window.addEventListener("beforeunload", (e) => { if (TXDIRTY || QUEUE.length) { e.preventDefault(); e.returnValue = ""; } });
 </script>
 </body>
 </html>
