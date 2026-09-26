@@ -449,7 +449,15 @@ async function loadTexts() {
     TXP.forEach((p) => p.groups.forEach((g) => g.items.forEach((it) => (DEF[it.k] = { ...it, page: p.name, group: g.title }))));
     const s = await getDoc(doc(db, "jc_site", "texts")); const d = s.exists() ? s.data() : {};
     $("ct-email").value = d._contact?.email || ""; $("ct-wa").value = d._contact?.whatsapp || "";
-    Object.entries(d).forEach(([k, v]) => { const df = DEF[k]; if (df && v && flat(v.src_ar) === df.p_ar && flat(v.src_en) === df.p_en) OV[k] = v; });
+    const same = (df, v) => df && v && flat(v.src_ar) === df.p_ar && flat(v.src_en) === df.p_en;
+    const moved = [];
+    Object.entries(d).forEach(([k, v]) => { if (k === "_contact") return; if (same(DEF[k], v)) OV[k] = v; else moved.push([k, v]); });
+    // a section was added/removed since the edit was saved: find the same text on the same page
+    moved.forEach(([k, v]) => {
+      const pre = k.replace(/_\d+$/, "") + "_";
+      const hit = Object.values(DEF).find((df) => df.k.startsWith(pre) && !OV[df.k] && same(df, v));
+      if (hit) OV[hit.k] = v;
+    });
   } catch (e) { console.warn(e); $("tx-list").innerHTML = '<p class="status err">تعذّر تحميل النصوص.</p>'; return; }
   $("tx-page").innerHTML = TXP.map((p, i) => `<option value="${i}">${esc(p.name)}</option>`).join("");
   renderTexts();

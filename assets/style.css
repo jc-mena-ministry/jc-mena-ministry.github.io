@@ -510,17 +510,13 @@ a.vcard{display:block;text-decoration:none}
 .vcard .vt{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 @media (max-width:600px){.vall{grid-template-columns:1fr 1fr;gap:10px}.vcard .vt{font-size:12.5px;padding:10px}.lib-tools .btn{flex:1 1 100%;justify-content:center}}
 
-/* moving photo backdrop */
-.bg-photos{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;gap:14px;padding-inline:7px;opacity:.25;overflow:hidden;
-  -webkit-mask-image:linear-gradient(to bottom,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 12%,#000 88%,transparent)}
-.bp-col{flex:1;min-width:0;overflow:hidden}
-.bp-track{display:flex;flex-direction:column;gap:14px;will-change:transform;animation:bp-up var(--d,160s) linear infinite}
-.bp-col.down .bp-track{animation-name:bp-down}
-.bp-track span{display:block;aspect-ratio:4/3;border-radius:16px;background:#11152a center/cover no-repeat;filter:saturate(.85)}
-@keyframes bp-up{from{transform:translateY(0)}to{transform:translateY(calc(-50% - 7px))}}
-@keyframes bp-down{from{transform:translateY(calc(-50% - 7px))}to{transform:translateY(0)}}
-@media (prefers-reduced-motion: reduce){.bp-track{animation:none!important}}
-@media (max-width:600px){.bg-photos{gap:10px;padding-inline:5px}.bp-track{gap:10px}.bp-track span{border-radius:12px}}
+/* photo backdrop: one large image, cross-fades every 10s */
+.bg-photos{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.15;overflow:hidden}
+.bg-slide{position:absolute;inset:0;opacity:0;transition:opacity 2.4s ease}
+.bg-slide.on{opacity:1}
+.bg-slide i{position:absolute;inset:-40px;background:center/cover no-repeat;filter:blur(26px) saturate(.9)}
+.bg-slide b{position:absolute;inset:4vh 4vw;background:center/contain no-repeat;-webkit-mask-image:radial-gradient(ellipse at center,#000 55%,transparent 78%);mask-image:radial-gradient(ellipse at center,#000 55%,transparent 78%)}
+@media (max-width:700px){.bg-slide b{inset:12vh 0}}
 /* keep text crisp over the photo backdrop */
 main h1,main h2,main h3,main p,main li,main dt,main dd,main cite,main .en-sub,main .crumbs,.eyebrow{text-shadow:0 1px 2px rgba(5,8,22,.95),0 0 14px rgba(5,8,22,.9),0 0 28px rgba(5,8,22,.75)}
 .hero-lead,.phero .lead,.head p{color:var(--soft)}
@@ -540,3 +536,28 @@ main h1,main h2,main h3,main p,main li,main dt,main dd,main cite,main .en-sub,ma
 .vcardx li b{color:#fff}
 .vcardx.wide{grid-column:1/-1}
 @media(max-width:600px){.vision{grid-template-columns:1fr}.vcardx{padding:18px}}
+
+/* home: 3 items + "more" tile */
+.row4{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) minmax(140px,.55fr);gap:14px;align-items:stretch}
+.row4 figure{margin:0;border-radius:16px;overflow:hidden;background:var(--surface-2);border:1px solid var(--line)}
+.row4 figure img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;display:block}
+.row4 figcaption{padding:10px 12px;font-size:13.5px;color:var(--soft)}
+.more-tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:18px;border-radius:16px;text-align:center;
+  border:1px dashed rgba(168,85,247,.55);background:linear-gradient(160deg,rgba(168,85,247,.14),rgba(6,182,212,.1));color:var(--ink);transition:.2s;text-decoration:none}
+.more-tile b,.more-tile small{text-decoration:none}
+.more-tile:hover{border-style:solid;border-color:var(--cyan);transform:translateY(-3px)}
+.more-tile .mt-ic{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;font:800 24px/1 var(--lat);color:#fff;background:linear-gradient(135deg,var(--purple),var(--cyan));box-shadow:0 0 18px rgba(168,85,247,.45)}
+.more-tile b{font-size:18px;font-weight:800}
+.more-tile small{color:var(--muted);font-size:13px}
+.row4 .vcard .vt{-webkit-line-clamp:2}
+.vskel{border-radius:16px;background:linear-gradient(90deg,var(--surface-2),#1a1f3a,var(--surface-2));background-size:200% 100%;animation:skel 1.4s linear infinite;min-height:190px}
+@keyframes skel{to{background-position:-200% 0}}
+@media (max-width:760px){
+  .row4{grid-template-columns:1fr 1fr;gap:10px}
+  .row4>:first-child{grid-column:1/-1}
+  .more-tile{grid-column:1/-1;flex-direction:row;padding:14px}
+  .more-tile .mt-ic{width:40px;height:40px;font-size:18px}
+  .more-tile small{display:none}
+  .row4 figcaption{font-size:12.5px;padding:8px 10px}
+  .row4 .vcard .vt{font-size:12.5px;padding:10px}
+}

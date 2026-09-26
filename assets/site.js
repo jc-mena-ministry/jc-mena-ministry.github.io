@@ -139,9 +139,13 @@ const md2html = (x) => esc(x).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/\*
 const ORIG = new Map();
 function applyTexts(tx) {
   if (!tx) return;
+  const bySrc = {};
+  Object.entries(tx).forEach(([k, v]) => { if (v && v.src_ar) bySrc[k.replace(/_\d+$/, "") + "|" + flat(EN ? v.src_en : v.src_ar)] = v; });
   document.querySelectorAll("[data-k]").forEach((el) => {
     if (!ORIG.has(el)) ORIG.set(el, { html: el.innerHTML, text: flat(el.textContent) });
-    const o = tx[el.dataset.k], orig = ORIG.get(el);
+    const orig = ORIG.get(el);
+    let o = tx[el.dataset.k];
+    if (!o || orig.text !== flat(EN ? o.src_en : o.src_ar)) o = bySrc[el.dataset.k.replace(/_\d+$/, "") + "|" + orig.text];
     const val = o && (EN ? o.en : o.ar), src = o && (EN ? o.src_en : o.src_ar);
     if (!val || orig.text !== flat(src)) { if (el.dataset.edited) { el.innerHTML = orig.html; delete el.dataset.edited; } return; }
     let keep = "";
@@ -178,6 +182,18 @@ async function fullPhoto(id) {
   if (!FULL.has(id)) FULL.set(id, getDoc(doc(db, "jc_photo_full", id)).then((s) => (s.exists() ? s.data().data : null)).catch(() => null));
   return FULL.get(id);
 }
+function photoFig(d) {
+  const p = d.data(), cap = L(p, "caption") || "";
+  return `<figure><a class="gl" href="#photo" data-fid="${esc(d.id)}" data-cap="${esc(cap)}"><img src="${esc(p.thumb)}" alt="${esc(cap)}" loading="lazy" width="${+p.tw || 640}" height="${+p.th || 466}"></a>${cap ? `<figcaption>${esc(cap)}</figcaption>` : ""}</figure>`;
+}
+(async () => {
+  const g = document.getElementById("hgallery"); if (!g) return;
+  try {
+    const snap = await getDocs(query(collection(db, "jc_photos"), orderBy("createdAt", "desc"), limit(3)));
+    const figs = [...g.querySelectorAll("figure")];
+    snap.docs.forEach((d, i) => { if (figs[i]) figs[i].outerHTML = photoFig(d); });
+  } catch (e) { console.warn("photos not loaded", e); }
+})();
 (async () => {
   const g = document.getElementById("gallery");
   if (!g || PAGE !== "topteam") return;
@@ -191,10 +207,7 @@ async function fullPhoto(id) {
     const col = collection(db, "jc_photos");
     const q = last ? query(col, orderBy("createdAt", "desc"), startAfter(last), limit(STEP)) : query(col, orderBy("createdAt", "desc"), limit(STEP));
     let snap; try { snap = await getDocs(q); } catch (e) { console.warn("photos not loaded", e); return; }
-    const html = snap.docs.map((d) => {
-      const p = d.data(), cap = L(p, "caption") || "";
-      return `<figure><a class="gl" href="#photo" data-fid="${esc(d.id)}" data-cap="${esc(cap)}"><img src="${esc(p.thumb)}" alt="${esc(cap)}" loading="lazy" width="${+p.tw || 640}" height="${+p.th || 466}"></a>${cap ? `<figcaption>${esc(cap)}</figcaption>` : ""}</figure>`;
-    }).join("");
+    const html = snap.docs.map(photoFig).join("");
     if (firstStatic) firstStatic.insertAdjacentHTML("beforebegin", html); else g.insertAdjacentHTML("beforeend", html);
     if (snap.docs.length) { last = snap.docs[snap.docs.length - 1]; g.closest("[data-when]")?.classList.remove("hide"); }
     more.hidden = snap.docs.length < STEP;
@@ -231,6 +244,31 @@ async function fetchAllVideos() {
   return items;
 }
 
+async function topVideos(n) {
+  const CK = "jc-yt-top-v1", MAX_AGE = 6 * 3600 * 1000;
+  try { const c = JSON.parse(localStorage.getItem(CK) || "null"); if (c && Date.now() - c.t < MAX_AGE && c.items?.length >= n) return c.items.slice(0, n); } catch (e) {}
+  const all = await fetchAllVideos(), views = {};
+  for (let i = 0; i < all.length; i += 50) {
+    const ids = all.slice(i, i + 50).map((v) => v.id).join(",");
+    const r = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=statistics&id=${ids}&key=${YOUTUBE_API_KEY}`);
+    if (!r.ok) throw new Error("YouTube API " + r.status);
+    for (const it of (await r.json()).items || []) views[it.id] = +(it.statistics?.viewCount || 0);
+  }
+  const items = all.map((v) => ({ ...v, views: views[v.id] || 0 })).sort((a, b) => b.views - a.views).slice(0, 12);
+  try { localStorage.setItem(CK, JSON.stringify({ t: Date.now(), items })); } catch (e) {}
+  return items.slice(0, n);
+}
+(async () => {
+  const box = document.getElementById("topv"); if (!box || !YOUTUBE_API_KEY) return;
+  let top; try { top = await topVideos(3); } catch (e) { console.warn(e); return; }
+  if (!top.length) return;
+  const nf = new Intl.NumberFormat(EN ? "en" : "ar-EG", { notation: "compact", maximumFractionDigits: 1 });
+  box.querySelectorAll(".vskel").forEach((x) => x.remove());
+  box.insertAdjacentHTML("afterbegin", top.map((v) => videoCard(v.id, v.title, v.views ? T(`${nf.format(v.views)} مشاهدة`, `${nf.format(v.views)} views`) : "")).join(""));
+  box.setAttribute("aria-busy", "false");
+  box.closest("[data-when]")?.classList.remove("hide");
+})();
+
 (async () => {
   const grid = document.getElementById("vall"); if (!grid) return;
   const more = document.getElementById("v-more"), count = document.getElementById("v-count"), search = document.getElementById("v-search");
@@ -265,31 +303,33 @@ async function fetchAllVideos() {
   render(true);
 })();
 
-/* ---------- moving photo backdrop (all pages) ---------- */
+/* ---------- photo backdrop (all pages): one large image, changes every 10 seconds ---------- */
 (() => {
   if (document.querySelector(".bg-photos")) return;
   const pb = new URL("./photos/", import.meta.url).href, cb = new URL("./covers/", import.meta.url).href;
-  const photos = ["tt-2025-05-egypt","tt-2024-10-egypt-hall","tt-2023-05-lebanon-cup","tt-2024-08-egypt-group","tt-2022-11-lebanon",
+  const small = innerWidth < 700 ? "-sm" : "";
+  const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const photos = shuffle(["tt-2025-05-egypt","tt-2024-10-egypt-hall","tt-2023-05-lebanon-cup","tt-2024-08-egypt-group","tt-2022-11-lebanon",
     "tt-2025-02-egypt","tt-2024-04-lebanon","tt-2024-11-egypt","tt-2023-05-lebanon-crowd","tt-2024-10-egypt-group",
     "tt-2023-05-lebanon-hall","tt-2024-08-egypt-joy","tt-2022-11-lebanon-stage","tt-2024-11-egypt-smile","tt-2023-05-lebanon-cup2",
-    "tt-2024-08-egypt-winner","tt-2024-08-egypt-winner2"].map((n) => pb + n + "-sm.webp");
-  const covers = Array.from({ length: 53 }, (_, i) => cb + "c" + String(i).padStart(2, "0") + ".webp");
-  // shuffle covers once per visit, then alternate photo / cover / cover
-  for (let i = covers.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [covers[i], covers[j]] = [covers[j], covers[i]]; }
-  const P = []; let pi = 0, ci = 0;
-  while (ci < covers.length) { P.push(photos[pi++ % photos.length]); P.push(covers[ci++]); if (ci < covers.length) P.push(covers[ci++]); }
-  const cols = innerWidth < 600 ? 3 : innerWidth < 1100 ? 4 : 6;
+    "tt-2024-08-egypt-winner","tt-2024-08-egypt-winner2"].map((n) => pb + n + small + ".webp"));
+  const covers = shuffle(Array.from({ length: 53 }, (_, i) => cb + "c" + String(i).padStart(2, "0") + ".webp"));
+  const list = []; // alternate: competition photo, book cover, …
+  for (let i = 0; i < covers.length; i++) { list.push(photos[i % photos.length]); list.push(covers[i]); }
   const layer = document.createElement("div");
   layer.className = "bg-photos"; layer.setAttribute("aria-hidden", "true");
-  let html = "";
-  for (let c = 0; c < cols; c++) {
-    const items = [];
-    for (let i = 0; i < 6; i++) items.push(P[(c * 6 + i) % P.length]);
-    const strip = items.map((src) => `<span style="background-image:url('${src}')"></span>`).join("");
-    html += `<div class="bp-col ${c % 2 ? "down" : "up"}" style="--d:${150 + (c % 3) * 30}s"><div class="bp-track">${strip}${strip}</div></div>`;
-  }
-  layer.innerHTML = html;
+  layer.innerHTML = '<div class="bg-slide"><i></i><b></b></div><div class="bg-slide"><i></i><b></b></div>';
   document.body.prepend(layer);
+  const slides = layer.querySelectorAll(".bg-slide");
+  let k = 0, cur = 0;
+  const paint = (el, src) => { el.querySelector("i").style.backgroundImage = el.querySelector("b").style.backgroundImage = `url('${src}')`; };
+  paint(slides[0], list[0]); slides[0].classList.add("on");
+  setInterval(() => {
+    if (document.hidden) return;
+    const src = list[++k % list.length], img = new Image();
+    img.onload = () => { const nxt = slides[1 - cur]; paint(nxt, src); nxt.classList.add("on"); slides[cur].classList.remove("on"); cur = 1 - cur; };
+    img.src = src;
+  }, 10000);
 })();
 
 loadContent();
